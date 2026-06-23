@@ -11,9 +11,22 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom') || id.includes('@tanstack/react-query')) {
-              return 'vendor';
-            }
+            return 'vendor'
+          }
+          if (id.includes('src/api')) {
+            return 'api'
+          }
+          if (id.includes('src/hooks')) {
+            return 'hooks'
+          }
+          if (id.includes('src/mocks')) {
+            return 'mocks'
+          }
+          if (id.includes('src/components')) {
+            return 'components'
+          }
+          if (id.includes('src/context')) {
+            return 'context'
           }
         },
       },
