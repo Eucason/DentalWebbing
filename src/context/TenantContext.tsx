@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { TenantConfig } from '../types'
+import { MOCK_TENANT_CONFIG } from '../mocks/data'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -89,6 +90,14 @@ export function TenantProvider({ children }: TenantProviderProps) {
     let cancelled = false
 
     async function fetchTenantConfig() {
+      // 0. Honor the mock toggle first — in offline dev we never want to fall
+      //    through to a network call or surface stale cached real data.
+      if (import.meta.env.VITE_USE_MOCKS === 'true') {
+        applyTenantColors(MOCK_TENANT_CONFIG.colors)
+        if (!cancelled) setState({ status: 'ready', config: MOCK_TENANT_CONFIG })
+        return
+      }
+
       // 1. Try the cache first
       const cached = loadCachedConfig()
       if (cached) {

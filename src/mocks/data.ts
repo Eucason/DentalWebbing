@@ -1,4 +1,32 @@
-import type { ClinicInfo, Doctor, Service, ContactFormData, ContactFormResponse } from '../types'
+import type {
+  ClinicInfo,
+  Doctor,
+  Service,
+  ContactFormData,
+  ContactFormResponse,
+  TenantConfig,
+} from '../types'
+
+// ---------------------------------------------------------------------------
+// Mock Tenant Config
+// ---------------------------------------------------------------------------
+// The most foundational mock — TenantProvider resolves this before any other
+// data loads, so the optional contact fields are populated to give Header /
+// Footer something complete to render in offline dev mode.
+export const MOCK_TENANT_CONFIG: TenantConfig = {
+  id: 'mock-tenant-1',
+  name: 'Apex Orthodontics',
+  domain: 'apexorthodontics.net',
+  apiSubdirectoryPath: '/wp-json/wp/v2',
+  colors: {
+    primary: '#0369a1',
+    secondary: '#0ea5e9',
+    accent: '#facc15',
+  },
+  contactEmail: 'hello@apexorthodontics.net',
+  contactPhone: '+254 700 123 456',
+  address: '142 Maplewood Avenue, Suite 3, Nairobi, Kenya 00200',
+}
 
 // ---------------------------------------------------------------------------
 // Mock Clinic Info

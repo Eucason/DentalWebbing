@@ -1,4 +1,4 @@
-# DentalWebbing - Progress
+n# DentalWebbing - Progress
 
 **Project:** A multi-tenant dental clinic frontend. Dynamically resolves clinic branding, content, and API configuration from a WordPress-backed SaaS backend. Built on Vite + React + TypeScript.
 **Stack:** Vite 8 - React 19 - TypeScript 6 (strict) - React Router v7 - TanStack Query v5 - Axios - Tailwind CSS v3 - Prettier - ESLint
