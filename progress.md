@@ -25,13 +25,13 @@ In Progress
 | 08 | Routing Setup | Done |
 | 09 | API Client Layer | ✅ Done |
 | 10 | React Query Configuration | ✅ Done |
-| 11 | Skeleton UI Component System | 🔜 Next |
-| 12 | Base UI Components | Pending |
+| 11 | Skeleton UI Component System | ✅ Done |
+| 12 | Base UI Components | 🔜 Next |
 
 ---
 
 ## Up Next
-- [ ] **Task 11:** Skeleton UI Component System — build `src/components/ui/Skeleton.tsx` as a reusable animated placeholder; create layout-matching skeleton variants for each data-fetching section.
+- [ ] **Task 12:** Base UI Components — build `Button`, `Card`, `PageWrapper`, `Header`, and `Footer` primitive components in `src/components/`.
 
 ## Blockers / Open Questions
 - The real production API host and tenant config endpoint URL have placeholder values in `.env.production`. Update before any production deployment.
@@ -40,6 +40,26 @@ In Progress
 ---
 
 ## Completed Work (Detail)
+
+### Task 11 — Skeleton UI Component System
+**File:** `src/components/ui/Skeleton.tsx`, `src/components/layout/RouteLoadingFallback.tsx`
+
+Replaced the minimal one-liner `Skeleton` stub with a full skeleton system. All components use only neutral Tailwind `slate` tones — no CSS custom properties, so they render correctly before `TenantContext` reaches `ready`.
+
+| Export | Purpose |
+|--------|---------|
+| `Skeleton` | Base animated `div` — sized by `className` prop. Compose multiples to match any layout. |
+| `HeroSkeleton` | Two-column hero: text column (headline + subtitle + CTAs) + image block. |
+| `DoctorsSkeleton` | Responsive 1–3 column grid of doctor cards (avatar, name, specialty, bio). `count` prop (default 3). |
+| `ServicesSkeleton` | Responsive 1–3 column grid of service tiles (icon, name, description). `count` prop (default 6). |
+| `ContactSkeleton` | Two-column: address/hours rows + form fields (name, email, message, submit). |
+| `PageSkeleton` | Full-page composition: `HeroSkeleton` + `DoctorsSkeleton`. Used by route-level Suspense. |
+
+`RouteLoadingFallback` simplified to a single-line delegate to `PageSkeleton`, removing the previously duplicated inline layout.
+
+All checks pass: `tsc --noEmit` ✅ · `eslint .` ✅ · `prettier --write .` ✅
+
+---
 
 ### Task 10 — React Query Configuration
 **File:** `src/main.tsx`
@@ -159,6 +179,13 @@ Scaffolded workspace with `create-vite` (react-ts template). Git initialized and
 ---
 
 ## Session Log
+
+### 2026-06-23 - Antigravity (Task 11)
+- Replaced minimal `Skeleton` stub with a full skeleton system in `src/components/ui/Skeleton.tsx`.
+- Added `HeroSkeleton`, `DoctorsSkeleton` (count prop), `ServicesSkeleton` (count prop), `ContactSkeleton`, `PageSkeleton` compositions.
+- Simplified `RouteLoadingFallback` to delegate to `PageSkeleton` — removed previously duplicated inline layout.
+- All neutral `slate` tones; no CSS custom properties — safe before tenant resolution.
+- All checks pass: `tsc --noEmit` ✅ · `eslint .` ✅ · `prettier` ✅
 
 ### 2026-06-23 - Antigravity (Task 10)
 - Created `QueryClient` in `main.tsx` with `staleTime: 5 min`, `retry: 1`, `refetchOnWindowFocus: false`.
