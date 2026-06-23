@@ -1,16 +1,17 @@
 import { useClinicInfo } from '../../hooks/useClinicInfo'
 import { ContactSkeleton } from '../ui/Skeleton'
+import { ContactForm } from './ContactForm'
 
 // ---------------------------------------------------------------------------
-// ContactSection — display-only (form added in Task 19)
+// ContactSection — address/hours display + contact form
 // ---------------------------------------------------------------------------
 // Consumes useClinicInfo() and renders the clinic's address, contact details,
-// and opening hours. No form here — that comes in Task 19.
+// opening hours, and a validated contact form (Task 19).
 //
 // State machine:
 //   isLoading → <ContactSkeleton />
 //   isError   → inline neutral alert
-//   data      → address + hours layout
+//   data      → address + hours + <ContactForm />
 // ---------------------------------------------------------------------------
 
 export function ContactSection() {
@@ -101,6 +102,12 @@ export function ContactSection() {
             ))}
           </dl>
         </div>
+      </div>
+
+      {/* ── Contact form (Task 19) ────────────────────────────────────── */}
+      <div className="mx-auto mt-12 max-w-5xl">
+        <h2 className="mb-6 text-2xl font-bold text-slate-800">Send Us a Message</h2>
+        <ContactForm />
       </div>
     </section>
   )

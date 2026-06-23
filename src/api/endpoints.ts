@@ -1,5 +1,12 @@
 import type { AxiosInstance } from 'axios'
-import type { Doctor, Service, ClinicInfo, TenantConfig } from '../types'
+import type {
+  Doctor,
+  Service,
+  ClinicInfo,
+  TenantConfig,
+  ContactFormData,
+  ContactFormResponse,
+} from '../types'
 
 // ---------------------------------------------------------------------------
 // Raw WordPress REST API shapes
@@ -144,4 +151,20 @@ export async function fetchClinicInfo(api: AxiosInstance): Promise<ClinicInfo> {
         ? (acf.socialLinks as Record<string, string>)
         : undefined,
   }
+}
+
+// ---------------------------------------------------------------------------
+// Contact Form
+// ---------------------------------------------------------------------------
+
+/**
+ * Submits the contact form payload to the WordPress REST API.
+ * Returns `{ success: true }` on HTTP 200; throws on any other status.
+ */
+export async function submitContactForm(
+  api: AxiosInstance,
+  payload: ContactFormData
+): Promise<ContactFormResponse> {
+  const { data } = await api.post<ContactFormResponse>('/wp-json/dentalwebbing/v1/contact', payload)
+  return data
 }

@@ -1,4 +1,4 @@
-import type { ClinicInfo, Doctor, Service } from '../types'
+import type { ClinicInfo, Doctor, Service, ContactFormData, ContactFormResponse } from '../types'
 
 // ---------------------------------------------------------------------------
 // Mock Clinic Info
@@ -133,3 +133,20 @@ export const MOCK_SERVICES: Service[] = [
     imageUrl: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=600',
   },
 ]
+
+// ---------------------------------------------------------------------------
+// Mock Contact Form Submission
+// ---------------------------------------------------------------------------
+
+/**
+ * Simulates a successful contact form submission with a short artificial
+ * delay so the loading state of the submit button is visible during dev.
+ */
+export async function mockSubmitContactForm(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _payload: ContactFormData
+): Promise<ContactFormResponse> {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve({ success: true }), 1200)
+  })
+}
