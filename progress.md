@@ -2,7 +2,7 @@
 
 **Project:** A multi-tenant dental clinic frontend. Dynamically resolves clinic branding, content, and API configuration from a WordPress-backed SaaS backend. Built on Vite + React + TypeScript.
 **Stack:** Vite 8 - React 19 - TypeScript 6 (strict) - React Router v7 - TanStack Query v5 - Axios - Tailwind CSS v3 - Prettier - ESLint
-**Last Updated:** 2026-06-23 - Antigravity (Task 13)
+**Last Updated:** 2026-06-23 - Antigravity (Custom Data Hooks)
 
 ---
 
@@ -28,11 +28,12 @@ In Progress
 | 11 | Skeleton UI Component System | ✅ Done |
 | 12 | Base UI Components | ✅ Done |
 | 13 | Mock Data Layer & Query Key Registry | ✅ Done |
+| 14 | Custom Data Hooks (`useClinicInfo`, `useDoctors`, `useServices`) | ✅ Done |
 
 ---
 
 ## Up Next
-- [ ] Task 14: Custom Data Hooks (`useClinicInfo`, `useDoctors`, `useServices`)
+- [ ] Hero Section (`HeroSection` consuming `useClinicInfo`)
 
 ## Blockers / Open Questions
 - The real production API host and tenant config endpoint URL have placeholder values in `.env.production`. Update before any production deployment.
