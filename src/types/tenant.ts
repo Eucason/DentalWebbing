@@ -9,4 +9,7 @@ export interface TenantConfig {
     accent: string
   }
   logoUrl?: string
+  contactEmail?: string
+  contactPhone?: string
+  address?: string
 }

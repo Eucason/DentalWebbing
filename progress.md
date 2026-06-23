@@ -26,12 +26,12 @@ In Progress
 | 09 | API Client Layer | ✅ Done |
 | 10 | React Query Configuration | ✅ Done |
 | 11 | Skeleton UI Component System | ✅ Done |
-| 12 | Base UI Components | 🔜 Next |
+| 12 | Base UI Components | ✅ Done |
 
 ---
 
 ## Up Next
-- [ ] **Task 12:** Base UI Components — build `Button`, `Card`, `PageWrapper`, `Header`, and `Footer` primitive components in `src/components/`.
+- [ ] Phase 3: Core Feature Implementation & Page Assembly (Pending tasks/specifications)
 
 ## Blockers / Open Questions
 - The real production API host and tenant config endpoint URL have placeholder values in `.env.production`. Update before any production deployment.
@@ -40,6 +40,21 @@ In Progress
 ---
 
 ## Completed Work (Detail)
+
+### Task 12 — Base UI Components
+**Files:** `src/components/ui/Button.tsx`, `src/components/ui/Card.tsx`, `src/components/layout/PageWrapper.tsx`, `src/components/layout/Header.tsx`, `src/components/layout/Footer.tsx`, `src/components/layout/AppLayout.tsx`, `src/types/tenant.ts`
+
+Implemented the primitive UI and layout components for Phase 2:
+- **`Button`**: Supports `primary`, `secondary`, and `outline` variants. Integrates loading state with spinner and CSS variable-driven colors (`var(--tenant-primary)`, etc.).
+- **`Card`**: Provides a standard generic container with rounded corners, borders, and a shadow.
+- **`PageWrapper`**: Standardizes max-width and padding properties for consistency.
+- **`Header`**: A sticky top navigation bar consuming `TenantContext`. Renders the logo if present, else clinic name.
+- **`Footer`**: Consumes `TenantContext` to display the clinic name, logo, links, and contact information. Updated `TenantConfig` interface to make contact details optional fields.
+- Updated `AppLayout` to compose the `Header` and `Footer` around the page content.
+
+All checks pass: `tsc --noEmit` ✅ · `eslint .` ✅ · `prettier --write .` ✅
+
+---
 
 ### Task 11 — Skeleton UI Component System
 **File:** `src/components/ui/Skeleton.tsx`, `src/components/layout/RouteLoadingFallback.tsx`
@@ -179,6 +194,15 @@ Scaffolded workspace with `create-vite` (react-ts template). Git initialized and
 ---
 
 ## Session Log
+
+### 2026-06-23 - Antigravity (Task 12)
+- Created `Button`, `Card`, `PageWrapper`, `Header`, and `Footer` UI components.
+- Hooked `Button` styles into tenant CSS variables.
+- Updated `TenantConfig` interface to include optional `contactEmail`, `contactPhone`, and `address`.
+- Made `Header` and `Footer` consume data from `TenantContext`.
+- Updated `AppLayout` to render `Header` and `Footer` around the `Outlet`.
+- Fixed TypeScript empty interface errors by converting them to type aliases.
+- Verified build: `npm run lint; npm run format; npx tsc --noEmit`.
 
 ### 2026-06-23 - Antigravity (Task 11)
 - Replaced minimal `Skeleton` stub with a full skeleton system in `src/components/ui/Skeleton.tsx`.
