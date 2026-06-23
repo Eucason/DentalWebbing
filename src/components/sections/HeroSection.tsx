@@ -58,10 +58,15 @@ export function HeroSection() {
           <p className="max-w-lg text-lg leading-relaxed text-white/85">{data.heroSubtitle}</p>
 
           {/* CTA buttons */}
-          <div className="mt-2 flex flex-wrap gap-3">
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             {/* Primary CTA — booking */}
             {bookingHref.startsWith('http') ? (
-              <a href={bookingHref} target="_blank" rel="noopener noreferrer">
+              <a
+                href={bookingHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white"
+              >
                 <Button
                   variant="secondary"
                   size="lg"
@@ -72,7 +77,10 @@ export function HeroSection() {
                 </Button>
               </a>
             ) : (
-              <a href={bookingHref}>
+              <a
+                href={bookingHref}
+                className="inline-flex rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white"
+              >
                 <Button
                   variant="secondary"
                   size="lg"
@@ -85,12 +93,16 @@ export function HeroSection() {
             )}
 
             {/* Secondary CTA — services page (React Router) */}
-            <Link to="/services" aria-label="View our services">
+            <Link
+              to="/services"
+              aria-label="View our services"
+              className="inline-flex rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white"
+            >
               <Button
                 variant="outline"
                 size="lg"
                 id="hero-cta-services"
-                className="border-white text-white hover:bg-white/10 focus:ring-white"
+                className="border-white text-white hover:bg-white/10"
               >
                 Our Services
               </Button>

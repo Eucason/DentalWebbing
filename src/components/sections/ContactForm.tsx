@@ -117,6 +117,10 @@ export function ContactForm() {
   // ── Form (Idle / Submitting / Error) ──────────────────────────────────────
   const formDisabled = mutation.isPending
 
+  // Shared input classes — focus-visible ring for keyboard users
+  const inputClasses =
+    'mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm placeholder-slate-400 focus:border-[var(--tenant-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tenant-primary)] disabled:cursor-not-allowed disabled:opacity-50'
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
@@ -133,11 +137,14 @@ export function ContactForm() {
             type="text"
             placeholder="Your full name"
             disabled={formDisabled}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm placeholder-slate-400 focus:border-[var(--tenant-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--tenant-primary)] disabled:cursor-not-allowed disabled:opacity-50"
+            aria-required="true"
+            aria-invalid={!!errors.name}
+            aria-describedby={errors.name ? 'contact-name-error' : undefined}
+            className={inputClasses}
             {...register('name')}
           />
           {errors.name && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p id="contact-name-error" className="mt-1 text-xs text-red-600" role="alert">
               {errors.name.message}
             </p>
           )}
@@ -156,11 +163,14 @@ export function ContactForm() {
             type="email"
             placeholder="you@example.com"
             disabled={formDisabled}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm placeholder-slate-400 focus:border-[var(--tenant-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--tenant-primary)] disabled:cursor-not-allowed disabled:opacity-50"
+            aria-required="true"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? 'contact-email-error' : undefined}
+            className={inputClasses}
             {...register('email')}
           />
           {errors.email && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p id="contact-email-error" className="mt-1 text-xs text-red-600" role="alert">
               {errors.email.message}
             </p>
           )}
@@ -176,11 +186,13 @@ export function ContactForm() {
             type="text"
             placeholder="+254 700 123 456"
             disabled={formDisabled}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm placeholder-slate-400 focus:border-[var(--tenant-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--tenant-primary)] disabled:cursor-not-allowed disabled:opacity-50"
+            aria-invalid={!!errors.phone}
+            aria-describedby={errors.phone ? 'contact-phone-error' : undefined}
+            className={inputClasses}
             {...register('phone')}
           />
           {errors.phone && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p id="contact-phone-error" className="mt-1 text-xs text-red-600" role="alert">
               {errors.phone.message}
             </p>
           )}
@@ -199,18 +211,21 @@ export function ContactForm() {
             rows={5}
             placeholder="How can we help you?"
             disabled={formDisabled}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm placeholder-slate-400 focus:border-[var(--tenant-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--tenant-primary)] disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+            aria-required="true"
+            aria-invalid={!!errors.message}
+            aria-describedby={errors.message ? 'contact-message-error' : undefined}
+            className={`${inputClasses} resize-y`}
             {...register('message')}
           />
           {errors.message && (
-            <p className="mt-1 text-xs text-red-600" role="alert">
+            <p id="contact-message-error" className="mt-1 text-xs text-red-600" role="alert">
               {errors.message.message}
             </p>
           )}
         </div>
 
         {/* HIPAA Disclaimer */}
-        <p className="text-xs text-slate-500 bg-slate-50 p-3 rounded-md border border-slate-100">
+        <p className="rounded-md border border-slate-100 bg-slate-50 p-3 text-xs text-slate-500">
           <strong className="font-semibold text-slate-700">Privacy Note:</strong> Please do not
           include any sensitive medical or personal health information (PHI) in this form. This form
           is intended for general inquiries only.
@@ -221,6 +236,7 @@ export function ContactForm() {
           type="submit"
           loading={mutation.isPending}
           disabled={formDisabled}
+          aria-busy={mutation.isPending}
           className="self-start"
         >
           Send Message

@@ -71,14 +71,15 @@ export function DoctorsSection() {
                   <img
                     src={doctor.imageUrl}
                     alt={`Portrait of ${doctor.name}`}
-                    className="h-32 w-32 rounded-full object-cover ring-4 ring-white shadow-md"
+                    className="h-32 w-32 rounded-full object-cover shadow-md ring-4 ring-white"
                     loading="lazy"
                   />
                 ) : (
                   /* Initials placeholder when no image is provided */
                   <div
-                    className="flex h-32 w-32 items-center justify-center rounded-full bg-[var(--tenant-primary)]/10 text-3xl font-semibold text-[var(--tenant-primary)] ring-4 ring-white shadow-md"
-                    aria-hidden="true"
+                    className="flex h-32 w-32 items-center justify-center rounded-full bg-[var(--tenant-primary)]/10 text-3xl font-semibold text-[var(--tenant-primary)] shadow-md ring-4 ring-white"
+                    role="img"
+                    aria-label={`Avatar for ${doctor.name}`}
                   >
                     {getInitials(doctor.name)}
                   </div>
@@ -118,7 +119,7 @@ export function DoctorsSection() {
                 <div className="mt-auto pt-4">
                   <Link
                     to={`/team#${doctor.slug}`}
-                    className="inline-flex items-center text-sm font-medium text-[var(--tenant-primary)] hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)] focus:ring-offset-2 rounded"
+                    className="inline-flex items-center rounded text-sm font-medium text-[var(--tenant-primary)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
                     aria-label={`View profile for ${doctor.name}`}
                   >
                     View profile

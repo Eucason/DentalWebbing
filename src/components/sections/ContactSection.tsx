@@ -38,22 +38,22 @@ export function ContactSection() {
   return (
     <section className="w-full bg-white px-6 py-16" aria-label="Contact information">
       <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-2">
-        {/* ── Address & contact ──────────────────────────────────────── */}
+        {/* ── Address & contact ───────────────────────────────────────────── */}
         <div className="flex flex-col gap-6">
           <div>
-            <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
+            <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
               Address
-            </h3>
+            </h2>
             <p className="text-slate-700">{data.address}</p>
           </div>
 
           <div className="flex flex-col gap-2">
-            <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
-              Phone & Email
-            </h3>
+            <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
+              Phone &amp; Email
+            </h2>
             <a
               href={`tel:${data.contactPhone}`}
-              className="flex items-center gap-2 text-slate-700 hover:text-[var(--tenant-primary)] transition-colors"
+              className="flex items-center gap-2 rounded text-slate-700 transition-colors hover:text-[var(--tenant-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
               aria-label={`Call us at ${data.contactPhone}`}
             >
               <PhoneIcon />
@@ -61,7 +61,7 @@ export function ContactSection() {
             </a>
             <a
               href={`mailto:${data.contactEmail}`}
-              className="flex items-center gap-2 text-slate-700 hover:text-[var(--tenant-primary)] transition-colors"
+              className="flex items-center gap-2 rounded text-slate-700 transition-colors hover:text-[var(--tenant-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
               aria-label={`Email us at ${data.contactEmail}`}
             >
               <MailIcon />
@@ -71,15 +71,15 @@ export function ContactSection() {
 
           {/* Social links */}
           {data.socialLinks && Object.keys(data.socialLinks).length > 0 && (
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               {Object.entries(data.socialLinks).map(([platform, url]) => (
                 <a
                   key={platform}
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-md border border-slate-200 px-3 py-1.5 text-sm capitalize text-slate-600 hover:border-[var(--tenant-primary)] hover:text-[var(--tenant-primary)] transition-colors"
-                  aria-label={`${platform} page`}
+                  className="rounded-md border border-slate-200 px-3 py-1.5 text-sm capitalize text-slate-600 transition-colors hover:border-[var(--tenant-primary)] hover:text-[var(--tenant-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
+                  aria-label={`${platform} page (opens in new tab)`}
                 >
                   {platform}
                 </a>
@@ -88,11 +88,11 @@ export function ContactSection() {
           )}
         </div>
 
-        {/* ── Opening hours ───────────────────────────────────────────── */}
+        {/* ── Opening hours ───────────────────────────────────────────────── */}
         <div>
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
             Opening Hours
-          </h3>
+          </h2>
           <dl className="divide-y divide-slate-100 rounded-lg border border-slate-200 bg-slate-50">
             {Object.entries(data.hours).map(([day, hours]) => (
               <div key={day} className="flex items-center justify-between px-4 py-2.5">
@@ -104,7 +104,7 @@ export function ContactSection() {
         </div>
       </div>
 
-      {/* ── Contact form (Task 19) ────────────────────────────────────── */}
+      {/* ── Contact form (Task 19) ────────────────────────────────────────── */}
       <div className="mx-auto mt-12 max-w-5xl">
         <h2 className="mb-6 text-2xl font-bold text-slate-800">Send Us a Message</h2>
         <ContactForm />

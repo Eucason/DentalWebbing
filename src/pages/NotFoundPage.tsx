@@ -10,7 +10,7 @@ function NotFoundPage() {
       </p>
       <Link
         to="/"
-        className="mt-8 inline-flex rounded bg-tenant-primary px-5 py-3 font-semibold text-white"
+        className="mt-8 inline-flex rounded bg-tenant-primary px-5 py-3 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
       >
         Return home
       </Link>

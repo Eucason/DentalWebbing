@@ -81,25 +81,25 @@ export function ServicesSection({ limit }: ServicesSectionProps) {
                 <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100">
                   <img
                     src={service.imageUrl}
-                    alt=""
+                    alt={`Illustration of ${service.name}`}
                     className="h-full w-full object-cover"
                     loading="lazy"
                   />
                 </div>
               ) : (
-                <div
-                  className="flex aspect-[16/9] w-full items-center justify-center bg-[var(--tenant-primary)]/5"
-                  aria-hidden="true"
-                >
+                <div className="flex aspect-[16/9] w-full items-center justify-center bg-[var(--tenant-primary)]/5">
                   {service.iconUrl ? (
                     <img
                       src={service.iconUrl}
-                      alt=""
+                      alt={`${service.name} icon`}
                       className="h-12 w-12 text-[var(--tenant-primary)]"
                       loading="lazy"
                     />
                   ) : (
-                    <ServiceDefaultIcon className="h-12 w-12 text-[var(--tenant-primary)]" />
+                    <ServiceDefaultIcon
+                      className="h-12 w-12 text-[var(--tenant-primary)]"
+                      label={`${service.name} icon`}
+                    />
                   )}
                 </div>
               )}
@@ -114,7 +114,7 @@ export function ServicesSection({ limit }: ServicesSectionProps) {
                 <div className="mt-auto pt-4">
                   <Link
                     to={`/services#${service.slug}`}
-                    className="inline-flex items-center text-sm font-medium text-[var(--tenant-primary)] hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)] focus:ring-offset-2 rounded"
+                    className="inline-flex items-center rounded text-sm font-medium text-[var(--tenant-primary)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
                     aria-label={`Learn more about ${service.name}`}
                   >
                     Learn more
@@ -144,7 +144,7 @@ export function ServicesSection({ limit }: ServicesSectionProps) {
 // Default service icon (used when neither imageUrl nor iconUrl is provided)
 // ---------------------------------------------------------------------------
 
-function ServiceDefaultIcon({ className = '' }: { className?: string }) {
+function ServiceDefaultIcon({ className = '', label }: { className?: string; label: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +153,8 @@ function ServiceDefaultIcon({ className = '' }: { className?: string }) {
       viewBox="0 0 24 24"
       stroke="currentColor"
       strokeWidth={1.5}
-      aria-hidden="true"
+      role="img"
+      aria-label={label}
     >
       <path
         strokeLinecap="round"
