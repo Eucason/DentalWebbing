@@ -8,6 +8,8 @@ export const MOCK_CLINIC_INFO: ClinicInfo = {
   heroSubtitle:
     'Compassionate, modern dentistry for the whole family. Book your appointment today and experience the difference.',
   heroImageUrl: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=1600',
+  tagline: 'Trusted by 5,000+ patients across Nairobi',
+  bookingUrl: '#contact',
   address: '142 Maplewood Avenue, Suite 3, Nairobi, Kenya 00200',
   contactPhone: '+254 700 123 456',
   contactEmail: 'hello@apexdental.co.ke',

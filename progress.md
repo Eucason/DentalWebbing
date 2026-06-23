@@ -2,7 +2,7 @@
 
 **Project:** A multi-tenant dental clinic frontend. Dynamically resolves clinic branding, content, and API configuration from a WordPress-backed SaaS backend. Built on Vite + React + TypeScript.
 **Stack:** Vite 8 - React 19 - TypeScript 6 (strict) - React Router v7 - TanStack Query v5 - Axios - Tailwind CSS v3 - Prettier - ESLint
-**Last Updated:** 2026-06-23 - Antigravity (Custom Data Hooks)
+**Last Updated:** 2026-06-23 - Antigravity (HeroSection)
 
 ---
 
@@ -29,11 +29,19 @@ In Progress
 | 12 | Base UI Components | ✅ Done |
 | 13 | Mock Data Layer & Query Key Registry | ✅ Done |
 | 14 | Custom Data Hooks (`useClinicInfo`, `useDoctors`, `useServices`) | ✅ Done |
+| 15 | HeroSection Component | ✅ Done |
 
 ---
 
-## Up Next
-- [ ] Hero Section (`HeroSection` consuming `useClinicInfo`)
+## Up Next — Phase 3 Queue
+
+| # | Task | Status |
+|---|------|--------|
+| 16 | DoctorsSection & ServicesSection Components | ⏭️ Next |
+| 17 | Page Assembly | ⏳ Pending |
+| 18 | SEO Component (`react-helmet-async`) | ⏳ Pending |
+| 19 | Contact Form | ⏳ Pending |
+| 20 | Responsive Design & Accessibility Polish | ⏳ Pending |
 
 ## Blockers / Open Questions
 - The real production API host and tenant config endpoint URL have placeholder values in `.env.production`. Update before any production deployment.
