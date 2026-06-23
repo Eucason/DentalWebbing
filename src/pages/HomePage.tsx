@@ -1,3 +1,4 @@
+import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { DoctorsSection } from '../components/sections/DoctorsSection'
 import { HeroSection } from '../components/sections/HeroSection'
@@ -16,6 +17,11 @@ import { ServicesSection } from '../components/sections/ServicesSection'
 function HomePage() {
   return (
     <>
+      <SEO
+        title="Home"
+        description="Welcome to our dental clinic — compassionate, professional care for your whole family. Book your appointment today."
+      />
+
       {/* ── Hero — full-bleed, sits outside PageWrapper intentionally ── */}
       <HeroSection />
 

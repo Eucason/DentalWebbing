@@ -1,3 +1,4 @@
+import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { ContactSection } from '../components/sections/ContactSection'
 
@@ -14,6 +15,11 @@ import { ContactSection } from '../components/sections/ContactSection'
 function ContactPage() {
   return (
     <>
+      <SEO
+        title="Contact"
+        description="Get in touch with our clinic to book an appointment, ask a question, or find our location and opening hours."
+      />
+
       {/* ── Page banner ────────────────────────────────────────────── */}
       <div className="border-b border-slate-200 bg-white py-12">
         <PageWrapper>

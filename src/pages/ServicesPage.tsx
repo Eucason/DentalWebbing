@@ -1,3 +1,4 @@
+import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { ServicesSection } from '../components/sections/ServicesSection'
 
@@ -13,6 +14,11 @@ import { ServicesSection } from '../components/sections/ServicesSection'
 function ServicesPage() {
   return (
     <>
+      <SEO
+        title="Services"
+        description="Explore the full range of dental services we offer — from routine check-ups and cleanings to cosmetic dentistry and orthodontics."
+      />
+
       {/* ── Page banner ────────────────────────────────────────────── */}
       <div className="border-b border-slate-200 bg-white py-12">
         <PageWrapper>
