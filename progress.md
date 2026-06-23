@@ -24,14 +24,14 @@ In Progress
 | 07 | Tailwind Theme Configuration | Done |
 | 08 | Routing Setup | Done |
 | 09 | API Client Layer | ✅ Done |
-| 10 | React Query Configuration | 🔜 Next |
-| 11 | Skeleton UI Component System | Pending |
+| 10 | React Query Configuration | ✅ Done |
+| 11 | Skeleton UI Component System | 🔜 Next |
 | 12 | Base UI Components | Pending |
 
 ---
 
 ## Up Next
-- [ ] **Task 10:** React Query Configuration — create `QueryClient` with global defaults in `main.tsx` and mount `ReactQueryDevtools` for development.
+- [ ] **Task 11:** Skeleton UI Component System — build `src/components/ui/Skeleton.tsx` as a reusable animated placeholder; create layout-matching skeleton variants for each data-fetching section.
 
 ## Blockers / Open Questions
 - The real production API host and tenant config endpoint URL have placeholder values in `.env.production`. Update before any production deployment.
@@ -40,6 +40,22 @@ In Progress
 ---
 
 ## Completed Work (Detail)
+
+### Task 10 — React Query Configuration
+**File:** `src/main.tsx`
+
+Added `QueryClient` with the global defaults specified by Phase 2 §2.10:
+- `staleTime: 5 * 60 * 1000` — 5 minutes. Avoids redundant re-fetches for data that rarely changes.
+- `retry: 1` — retries a failed request once before surfacing the error to the UI.
+- `refetchOnWindowFocus: false` — prevents silent background refetches on tab-switch, which would cause unexpected loading states.
+
+Wrapped the entire app tree in `<QueryClientProvider client={queryClient}>` in `main.tsx` (outermost provider, inside `StrictMode`, outside `App` so the client is accessible everywhere including `TenantProvider`).
+
+`ReactQueryDevtools` is mounted inside the provider, conditionally rendered only when `import.meta.env.VITE_APP_ENV === 'development'` — no devtools bundle ever ships to production. The `isDev` constant is evaluated at module load time.
+
+All checks pass: `tsc --noEmit` ✅ · `eslint .` ✅ · `prettier --write .` ✅
+
+---
 
 ### Task 09 — API Client Layer
 **Files:** `src/api/client.ts`, `src/api/endpoints.ts`
@@ -143,6 +159,12 @@ Scaffolded workspace with `create-vite` (react-ts template). Git initialized and
 ---
 
 ## Session Log
+
+### 2026-06-23 - Antigravity (Task 10)
+- Created `QueryClient` in `main.tsx` with `staleTime: 5 min`, `retry: 1`, `refetchOnWindowFocus: false`.
+- Wrapped app tree in `<QueryClientProvider>` as the outermost provider.
+- Mounted `<ReactQueryDevtools>` inside the provider, gated on `VITE_APP_ENV === 'development'`.
+- All checks pass: `tsc --noEmit` ✅ · `eslint .` ✅ · `prettier` ✅
 
 ### 2026-06-23 - Antigravity (Task 09)
 - Created `src/api/client.ts` with `createApiClient(tenantConfig)` factory; `baseURL` derived entirely from env vars + resolved tenant path.
