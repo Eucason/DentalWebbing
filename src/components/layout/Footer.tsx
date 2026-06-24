@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useTenantConfig } from '../../context/useTenant'
+import { getFooterNavigation } from '../../utils/navigation'
 import { PageWrapper } from './PageWrapper'
 
 export function Footer() {
   const config = useTenantConfig()
+  const footerNavItems = getFooterNavigation(config)
   const year = new Date().getFullYear()
 
   const linkClass =
@@ -26,18 +28,16 @@ export function Footer() {
           <p className="text-sm text-slate-600">Dedicated to providing excellent dental care.</p>
         </div>
 
-        <nav className="flex flex-col gap-3" aria-label="Footer">
-          <h2 className="font-semibold text-slate-900">Quick Links</h2>
-          <Link to="/services" className={linkClass}>
-            Services
-          </Link>
-          <Link to="/team" className={linkClass}>
-            Our Team
-          </Link>
-          <Link to="/contact" className={linkClass}>
-            Contact Us
-          </Link>
-        </nav>
+        {footerNavItems.length > 0 && (
+          <nav className="flex flex-col gap-3" aria-label="Footer">
+            <h2 className="font-semibold text-slate-900">Quick Links</h2>
+            {footerNavItems.map((item) => (
+              <Link key={item.to} to={item.to} className={linkClass}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        )}
 
         <div className="flex flex-col gap-3">
           <h2 className="font-semibold text-slate-900">Contact</h2>

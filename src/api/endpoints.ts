@@ -6,6 +6,7 @@ import type {
   TenantConfig,
   ContactFormData,
   ContactFormResponse,
+  WpPage,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -167,4 +168,35 @@ export async function submitContactForm(
 ): Promise<ContactFormResponse> {
   const { data } = await api.post<ContactFormResponse>('/wp-json/dentalwebbing/v1/contact', payload)
   return data
+}
+
+// ---------------------------------------------------------------------------
+// Dynamic Pages
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches a single WordPress page by its URL slug.
+ *
+ * Returns the mapped `WpPage` if found, or `null` if the slug doesn't match
+ * any published page in the tenant's WordPress site.
+ *
+ * Used by the DynamicPage component to render arbitrary clinic-created pages
+ * without requiring code changes or redeployment.
+ */
+export async function fetchPageBySlug(api: AxiosInstance, slug: string): Promise<WpPage | null> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/pages', {
+    params: { slug, _embed: true, per_page: 1 },
+  })
+
+  if (!data || data.length === 0) return null
+
+  const post = data[0]
+  return {
+    id: post.id,
+    slug: post.slug,
+    title: stripHtml(post.title.rendered),
+    content: post.content.rendered,
+    excerpt: post.excerpt?.rendered ? stripHtml(post.excerpt.rendered) : undefined,
+    featuredImageUrl: extractFeaturedImageUrl(post),
+  }
 }

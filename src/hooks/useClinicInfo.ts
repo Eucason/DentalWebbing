@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
-import { createApiClient } from '../api/client'
+import { useApiClient } from './useApiClient'
 import { fetchClinicInfo } from '../api/endpoints'
 import { QUERY_KEYS } from '../api/queryKeys'
 import { useTenantConfig } from '../context/useTenant'
@@ -20,15 +20,13 @@ export function useClinicInfo(): Pick<
 > {
   const tenantConfig = useTenantConfig()
   const useMocks = import.meta.env.VITE_USE_MOCKS === 'true'
+  const api = useApiClient()
 
   const query = useQuery<ClinicInfo>({
-    queryKey: QUERY_KEYS.clinicInfo,
+    queryKey: QUERY_KEYS.clinicInfo(tenantConfig.id),
     queryFn: useMocks
       ? () => Promise.resolve(MOCK_CLINIC_INFO)
-      : () => {
-          const api = createApiClient(tenantConfig)
-          return fetchClinicInfo(api)
-        },
+      : () => fetchClinicInfo(api),
     staleTime: 10 * 60 * 1000,
   })
 

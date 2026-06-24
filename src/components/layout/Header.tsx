@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useTenantConfig } from '../../context/useTenant'
+import { getTenantNavigation } from '../../utils/navigation'
 import { PageWrapper } from './PageWrapper'
 
 // ---------------------------------------------------------------------------
@@ -15,13 +16,6 @@ import { PageWrapper } from './PageWrapper'
 //   - All interactive elements have a visible focus-visible ring.
 // ---------------------------------------------------------------------------
 
-const NAV_ITEMS = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/services', label: 'Services', end: false },
-  { to: '/team', label: 'Our Team', end: false },
-  { to: '/contact', label: 'Contact', end: false },
-] as const
-
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
     'rounded transition-colors outline-none',
@@ -33,6 +27,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function Header() {
   const config = useTenantConfig()
+  const navItems = getTenantNavigation(config)
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -51,7 +46,7 @@ export function Header() {
 
         {/* ── Desktop nav ──────────────────────────────────────────────── */}
         <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <NavLink key={item.to} to={item.to} end={item.end} className={navLinkClass}>
               {item.label}
             </NavLink>
@@ -79,7 +74,7 @@ export function Header() {
           aria-label="Mobile navigation"
         >
           <PageWrapper className="flex flex-col py-2">
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}

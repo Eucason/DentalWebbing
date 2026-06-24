@@ -1,25 +1,18 @@
 import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { DoctorsSection } from '../components/sections/DoctorsSection'
-
-// ---------------------------------------------------------------------------
-// TeamPage — dedicated page showing the full team roster
-// No data fetching, no local state, no inline styles.
-//
-// Layout (top to bottom):
-//   1. Static page banner — heading + subtitle
-//   2. <DoctorsSection />  — full doctor grid
-// ---------------------------------------------------------------------------
+import { useSectionVisible } from '../hooks/useSectionVisible'
 
 function TeamPage() {
+  const showTeam = useSectionVisible('team')
+
   return (
     <>
       <SEO
         title="Our Team"
-        description="Meet our experienced dental professionals — a dedicated team committed to delivering outstanding patient care in a welcoming environment."
+        description="Meet our experienced dental professionals - a dedicated team committed to delivering outstanding patient care in a welcoming environment."
       />
 
-      {/* ── Page banner ────────────────────────────────────────────── */}
       <div className="border-b border-slate-200 bg-white py-12">
         <PageWrapper>
           <h1 className="text-4xl font-bold text-slate-950">Our Team</h1>
@@ -29,8 +22,7 @@ function TeamPage() {
         </PageWrapper>
       </div>
 
-      {/* ── Full doctors grid ──────────────────────────────────────── */}
-      <DoctorsSection />
+      {showTeam && <DoctorsSection />}
     </>
   )
 }

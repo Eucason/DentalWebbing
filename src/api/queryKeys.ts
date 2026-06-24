@@ -3,10 +3,15 @@
  *
  * Every React Query hook in this codebase must import keys from here.
  * No raw string arrays should appear inside `useQuery` / `useInfiniteQuery`
- * calls — use `QUERY_KEYS.<name>` instead.
+ * calls — use `QUERY_KEYS.<name>(tenantId)` instead.
+ *
+ * Keys are scoped by `tenantId` so that React Query caches data
+ * independently per clinic. Without this, switching the dev override
+ * domain could serve stale data from the wrong tenant.
  */
 export const QUERY_KEYS = Object.freeze({
-  clinicInfo: ['clinicInfo'] as const,
-  doctors: ['doctors'] as const,
-  services: ['services'] as const,
+  clinicInfo: (tenantId: string) => ['clinicInfo', tenantId] as const,
+  doctors: (tenantId: string) => ['doctors', tenantId] as const,
+  services: (tenantId: string) => ['services', tenantId] as const,
+  page: (tenantId: string, slug: string) => ['page', tenantId, slug] as const,
 })

@@ -8,7 +8,7 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 const ServicesPage = lazy(() => import('./pages/ServicesPage'))
 const TeamPage = lazy(() => import('./pages/TeamPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const DynamicPage = lazy(() => import('./pages/DynamicPage'))
 
 const routes = [
   {
@@ -29,7 +29,7 @@ const routes = [
   },
   {
     path: '*',
-    element: <NotFoundPage />,
+    element: <DynamicPage />,
   },
 ]
 

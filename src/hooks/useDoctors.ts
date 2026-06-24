@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
-import { createApiClient } from '../api/client'
+import { useApiClient } from './useApiClient'
 import { fetchDoctors } from '../api/endpoints'
 import { QUERY_KEYS } from '../api/queryKeys'
 import { useTenantConfig } from '../context/useTenant'
@@ -20,15 +20,13 @@ import type { Doctor } from '../types'
 export function useDoctors(): Pick<UseQueryResult<Doctor[]>, 'data' | 'isLoading' | 'isError'> {
   const tenantConfig = useTenantConfig()
   const useMocks = import.meta.env.VITE_USE_MOCKS === 'true'
+  const api = useApiClient()
 
   const query = useQuery<Doctor[]>({
-    queryKey: QUERY_KEYS.doctors,
+    queryKey: QUERY_KEYS.doctors(tenantConfig.id),
     queryFn: useMocks
       ? () => Promise.resolve(MOCK_DOCTORS)
-      : () => {
-          const api = createApiClient(tenantConfig)
-          return fetchDoctors(api)
-        },
+      : () => fetchDoctors(api),
     staleTime: 5 * 60 * 1000,
   })
 

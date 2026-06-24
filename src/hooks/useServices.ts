@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
-import { createApiClient } from '../api/client'
+import { useApiClient } from './useApiClient'
 import { fetchServices } from '../api/endpoints'
 import { QUERY_KEYS } from '../api/queryKeys'
 import { useTenantConfig } from '../context/useTenant'
@@ -17,15 +17,13 @@ import type { Service } from '../types'
 export function useServices(): Pick<UseQueryResult<Service[]>, 'data' | 'isLoading' | 'isError'> {
   const tenantConfig = useTenantConfig()
   const useMocks = import.meta.env.VITE_USE_MOCKS === 'true'
+  const api = useApiClient()
 
   const query = useQuery<Service[]>({
-    queryKey: QUERY_KEYS.services,
+    queryKey: QUERY_KEYS.services(tenantConfig.id),
     queryFn: useMocks
       ? () => Promise.resolve(MOCK_SERVICES)
-      : () => {
-          const api = createApiClient(tenantConfig)
-          return fetchServices(api)
-        },
+      : () => fetchServices(api),
     staleTime: 5 * 60 * 1000,
   })
 

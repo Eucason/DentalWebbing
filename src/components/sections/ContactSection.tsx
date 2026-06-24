@@ -1,4 +1,5 @@
 import { useClinicInfo } from '../../hooks/useClinicInfo'
+import { useFeatureFlag } from '../../hooks/useFeatureFlag'
 import { ContactSkeleton } from '../ui/Skeleton'
 import { ContactForm } from './ContactForm'
 
@@ -16,6 +17,7 @@ import { ContactForm } from './ContactForm'
 
 export function ContactSection() {
   const { data, isLoading, isError } = useClinicInfo()
+  const showContactForm = useFeatureFlag('contactForm')
 
   // ── Loading ──────────────────────────────────────────────────────────────
   if (isLoading) {
@@ -105,10 +107,12 @@ export function ContactSection() {
       </div>
 
       {/* ── Contact form (Task 19) ────────────────────────────────────────── */}
-      <div className="mx-auto mt-12 max-w-5xl">
-        <h2 className="mb-6 text-2xl font-bold text-slate-800">Send Us a Message</h2>
-        <ContactForm />
-      </div>
+      {showContactForm && (
+        <div className="mx-auto mt-12 max-w-5xl">
+          <h2 className="mb-6 text-2xl font-bold text-slate-800">Send Us a Message</h2>
+          <ContactForm />
+        </div>
+      )}
     </section>
   )
 }

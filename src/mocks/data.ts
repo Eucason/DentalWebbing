@@ -5,6 +5,7 @@ import type {
   ContactFormData,
   ContactFormResponse,
   TenantConfig,
+  WpPage,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -26,6 +27,16 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
   contactEmail: 'hello@apexorthodontics.net',
   contactPhone: '+254 700 123 456',
   address: '142 Maplewood Avenue, Suite 3, Nairobi, Kenya 00200',
+  navigation: [
+    { to: '/', label: 'Home', end: true },
+    { to: '/services', label: 'Services' },
+    { to: '/team', label: 'Our Team' },
+    { to: '/contact', label: 'Contact' },
+    { to: '/invisalign-special', label: 'Invisalign Special' },
+  ],
+  features: {
+    contactForm: true,
+  },
 }
 
 // ---------------------------------------------------------------------------
@@ -159,6 +170,28 @@ export const MOCK_SERVICES: Service[] = [
       'Regular scale-and-polish, fluoride treatments, fissure sealants, and personalised oral hygiene coaching keep decay and gum disease at bay — and reduce long-term treatment costs.',
     iconUrl: '/icons/hygiene.svg',
     imageUrl: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=600',
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock WordPress Pages
+// ---------------------------------------------------------------------------
+
+export const MOCK_PAGES: WpPage[] = [
+  {
+    id: 101,
+    slug: 'invisalign-special',
+    title: 'Invisalign Special',
+    excerpt: 'A limited clear aligner offer for new orthodontic patients.',
+    content: `
+      <h2>Clear aligner consultation</h2>
+      <p>Book a consultation to see whether Invisalign is a good fit for your smile goals.</p>
+      <ul>
+        <li>Digital smile scan</li>
+        <li>Treatment timeline estimate</li>
+        <li>Flexible payment options</li>
+      </ul>
+    `,
   },
 ]
 
