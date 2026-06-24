@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
@@ -10,23 +9,32 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
+          if (id.includes('node_modules/react-router-dom') || id.includes('node_modules/react-router')) {
+            return 'vendor-router'
+          }
+          if (id.includes('node_modules/@tanstack/react-query-devtools')) {
+            return 'vendor-devtools'
+          }
+          if (id.includes('node_modules/@tanstack')) {
+            return 'vendor-query'
+          }
+          if (id.includes('node_modules/react-hook-form') || id.includes('node_modules/@hookform') || id.includes('node_modules/zod')) {
+            return 'vendor-forms'
+          }
+          if (id.includes('node_modules/axios')) {
+            return 'vendor-http'
+          }
+          if (id.includes('node_modules/react-helmet-async')) {
+            return 'vendor-helmet'
+          }
+          if (id.includes('node_modules/react-error-boundary')) {
+            return 'vendor-misc'
+          }
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor-react'
+          }
           if (id.includes('node_modules')) {
-            return 'vendor'
-          }
-          if (id.includes('src/api')) {
-            return 'api'
-          }
-          if (id.includes('src/hooks')) {
-            return 'hooks'
-          }
-          if (id.includes('src/mocks')) {
-            return 'mocks'
-          }
-          if (id.includes('src/components')) {
-            return 'components'
-          }
-          if (id.includes('src/context')) {
-            return 'context'
+            return 'vendor-misc'
           }
         },
       },
