@@ -11,16 +11,16 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('react/') || id.includes('react-dom/')) {
-              return 'vendor-react';
+              return 'vendor-react'
             }
             if (id.includes('react-router-dom/')) {
-              return 'vendor-router';
+              return 'vendor-router'
             }
             if (id.includes('@tanstack/react-query/')) {
-              return 'vendor-query';
+              return 'vendor-query'
             }
             if (id.includes('axios/')) {
-              return 'vendor-http';
+              return 'vendor-http'
             }
           }
         },

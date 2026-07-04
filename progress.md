@@ -2,7 +2,7 @@
 
 **Project:** A multi-tenant dental clinic frontend that resolves clinic branding, content, navigation, and API configuration from a WordPress-backed SaaS backend.
 **Stack:** Vite 8 - React 19 - TypeScript 6 strict - React Router v7 - TanStack Query v5 - Axios - Tailwind CSS v3 - React Hook Form - Zod
-**Last Updated:** 2026-06-24 - Codex
+**Last Updated:** 2026-07-04 - GitHub Copilot
 
 ---
 
@@ -28,6 +28,9 @@ Frontend multi-tenant foundations are now fully in place through dynamic routing
 
 ## Completed Work
 
+### Repository Formatting Baseline
+Added a root `.editorconfig` and `.gitattributes` so the repo now standardizes on UTF-8, LF line endings, final newlines, and 2-space indentation for the main text-based file types. Normalized the tracked `vite.config.ts` blob to LF so Git no longer carries the mixed-ending outlier.
+
 ### Tenant Awareness And Theming
 Implemented domain-based tenant resolution, sessionStorage caching, globally available tenant context, and runtime CSS custom properties for tenant colors. Tenant colors flow through Tailwind via `tenant.primary`, `tenant.secondary`, and `tenant.accent`.
 
@@ -47,6 +50,12 @@ Mock mode now includes tenant navigation plus a sample `invisalign-special` Word
 ---
 
 ## Session Log
+
+### 2026-07-04 - GitHub Copilot
+- Added root `.editorconfig` and `.gitattributes` to enforce UTF-8, LF, final newlines, and 2-space indentation across the repo.
+- Normalized the only tracked text outlier, `vite.config.ts`, so both the working tree and Git index now report LF.
+- Confirmed there were no existing root editor or Git attributes files causing conflicting formatting rules.
+- Verified the repo baseline with `git ls-files --eol` after normalization.
 
 ### 2026-06-24
 - Finished the partially started Phase 5/6 frontend work: dynamic catch-all routing, WordPress page fetching, tenant navigation, section visibility hooks, and feature flag hooks.
