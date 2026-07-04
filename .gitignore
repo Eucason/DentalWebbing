@@ -29,6 +29,7 @@ dist-ssr
 .env*
 !.env.example
 
-# Tasks and Docs
+# Tasks, Docs and files
 docs/
 tasks/
+progress.md
