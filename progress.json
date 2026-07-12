@@ -1,0 +1,96 @@
+{
+  "project": "DentalWebbing Multi-Tenant Engine",
+  "stack": {
+    "bundler": "Vite 8",
+    "framework": "React 19",
+    "language": "TypeScript 6 strict",
+    "router": "React Router v7",
+    "state": "TanStack Query v5",
+    "http": "Axios",
+    "styling": "Tailwind CSS v3",
+    "forms": "React Hook Form",
+    "validation": "Zod"
+  },
+  "status": {
+    "phase": "Phase 3 in review",
+    "branch": "feat/testimonials-collection",
+    "workingTree": "uncommitted"
+  },
+  "blockers": [
+    "Backend tenant config support is required before real clinics can manage nav, section visibility, or feature flags.",
+    "Feature flags currently default to true for backwards compatibility. Confirm this business rule before onboarding tiered plans.",
+    "Dynamic WordPress HTML is sanitized client-side with DOMPurify, but rich embeds may need an allowlist decision later."
+  ],
+  "tasks": [
+    {
+      "id": "T_301",
+      "category": "Up Next",
+      "title": "Commit and review feat/testimonials-collection; wire a dedicated TestimonialsPage if a full-list route is desired.",
+      "status": "pending"
+    },
+    {
+      "id": "T_302",
+      "category": "Up Next",
+      "title": "Update the WordPress tenant config endpoint to return sections, navigation, and features.",
+      "status": "pending"
+    },
+    {
+      "id": "T_303",
+      "category": "Up Next",
+      "title": "Verify GET /wp-json/wp/v2/pages?slug=...&_embed=true against a real tenant and confirm the resolved base URL/path contract.",
+      "status": "pending"
+    },
+    {
+      "id": "T_304",
+      "category": "Up Next",
+      "title": "Verify the new GET /wp-json/wp/v2/testimonials?_embed=true CPT is registered on the backend and returns title, content, and the rating/location ACF fields.",
+      "status": "pending"
+    },
+    {
+      "id": "T_305",
+      "category": "Up Next",
+      "title": "Decide whether nested WordPress page paths should resolve by final slug only or full path hierarchy.",
+      "status": "pending"
+    },
+    {
+      "id": "T_306",
+      "category": "Up Next",
+      "title": "Replace placeholder production API values in .env.production before deployment.",
+      "status": "pending"
+    }
+  ],
+  "completedLog": [
+    {
+      "scope": "Repository Formatting Baseline",
+      "summary": "Added root .editorconfig and .gitattributes to standardize on UTF-8, LF line endings, and 2-space indentation. Normalized vite.config.ts."
+    },
+    {
+      "scope": "Tenant Awareness And Theming",
+      "summary": "Implemented domain-based tenant resolution, sessionStorage caching, and runtime CSS custom properties mapped to Tailwind variables."
+    },
+    {
+      "scope": "Data Layer And Page Assembly",
+      "summary": "Centralized WordPress REST fetching via React Query hooks. Built visitor-facing pages, SEO layout frames, and skeletal loading states."
+    },
+    {
+      "scope": "Dynamic Pages And Tenant Controls",
+      "summary": "Added frontend contract validations for tenant sections, features, and navigation arrays. Hooked catch-all routing inside DynamicPage with client-side DOMPurify scrubbing."
+    },
+    {
+      "scope": "Phase 3 — Testimonials Collection Stack",
+      "summary": "Constructed full 8-layer Testimonials stack matching Doctors/Services. Developed TestimonialsSection centering on dark premium layout canvas featuring an asymmetric 3-card stagger pattern."
+    }
+  ],
+  "sessionLog": [
+    {
+      "date": "2026-07-12",
+      "agent": "Claude Code (Phase 3 Initial)",
+      "updates": [
+        "Audited existing TenantContext, router, sections, and hooks against all four architecture principles.",
+        "Built the full Testimonials 8-layer stack mirroring Doctors/Services exactly.",
+        "Designed TestimonialsSection as a dark editorial canvas with an asymmetric 3-card stagger.",
+        "Fixed build errors in flight and verified npm run build passes on feat/testimonials-collection."
+      ]
+    }
+  ]
+}
