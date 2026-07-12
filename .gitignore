@@ -29,7 +29,10 @@ dist-ssr
 .env*
 !.env.example
 
-# Tasks, Docs and files
-docs/
-tasks/
+# Local progress scratch (user-specific, not part of the repo)
 progress.md
+
+# Claude Code / swarm tooling state (ephemeral, local-only)
+.claude/
+.claude-flow/
+.mcp.json
