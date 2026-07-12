@@ -3,12 +3,14 @@ import { PageWrapper } from '../components/layout/PageWrapper'
 import { DoctorsSection } from '../components/sections/DoctorsSection'
 import { HeroSection } from '../components/sections/HeroSection'
 import { ServicesSection } from '../components/sections/ServicesSection'
+import { TestimonialsSection } from '../components/sections/TestimonialsSection'
 import { useSectionVisible } from '../hooks/useSectionVisible'
 
 function HomePage() {
   const showHero = useSectionVisible('hero')
   const showServices = useSectionVisible('services')
   const showTeam = useSectionVisible('team')
+  const showTestimonials = useSectionVisible('testimonials')
 
   return (
     <>
@@ -36,6 +38,13 @@ function HomePage() {
           <DoctorsSection />
         </section>
       )}
+
+      {
+        // Full-bleed dark editorial canvas — self-contained, no outer wrapper.
+        // The component degrades to a centered symmetric layout if this tenant
+        // has fewer than 3 testimonials (handled internally).
+        showTestimonials && <TestimonialsSection limit={6} />
+      }
     </>
   )
 }

@@ -229,6 +229,105 @@ export function ContactSkeleton() {
 // Page-level composition (used by RouteLoadingFallback and Suspense fallbacks)
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Testimonials skeleton
+// ---------------------------------------------------------------------------
+// Matches the TestimonialsSection editorial 3-card canvas layout: dark canvas,
+// the "What they say?" watermark, staggered card placeholders, and a floating
+// star row. Neutral slate only (no tenant CSS vars) so it renders correctly
+// before branding is applied. Asymmetry is baked in so the loading → resolved
+// transition keeps its geometry.
+// ---------------------------------------------------------------------------
+
+interface TestimonialsSkeletonProps {
+  /** Number of card placeholders to render (default 3). */
+  count?: number
+}
+
+/**
+ * Vertical stagger offsets cycling per card index — mirrors the resolved
+ * TestimonialsSection `STAGGER` offsets so the masonry columns land in the same
+ * vertical positions on loading → resolved and there is no layout shift.
+ */
+const STAGGER = ['', 'md:mt-20', 'md:mt-10', 'md:mt-32', 'md:mt-6', 'md:mt-16']
+
+/**
+ * Dark editorial canvas placeholder matching the TestimonialsSection layout.
+ * When `count >= 3` it uses the same `md:grid-cols-3` masonry grid as the
+ * resolved section; below that it degrades to a centered stack to keep geometry
+ * stable in either case.
+ */
+export function TestimonialsSkeleton({ count = 3 }: TestimonialsSkeletonProps) {
+  const useGrid = count >= 3
+
+  return (
+    <section
+      className="relative w-full overflow-hidden bg-slate-950 px-6 py-24"
+      role="status"
+      aria-label="Loading testimonials"
+    >
+      {/* Typographic watermark */}
+      <div className="pointer-events-none absolute inset-0 z-0 flex select-none items-center justify-center">
+        <span className="font-serif text-7xl tracking-tight text-white/5 md:text-9xl">
+          What they say?
+        </span>
+      </div>
+
+      {/* Floating star row (top-left) */}
+      <div className="absolute left-8 top-8 z-10 md:left-12 md:top-12">
+        <div className="flex gap-1">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Skeleton key={i} className="h-4 w-4 rounded-full" />
+          ))}
+        </div>
+      </div>
+
+      {/* Staggered card placeholders */}
+      <div className="relative z-10 mx-auto max-w-6xl">
+        {useGrid ? (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:items-start">
+            {Array.from({ length: count }, (_, i) => (
+              <div key={i} className={STAGGER[i % STAGGER.length]}>
+                <TestimonialCardSkeleton />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-5">
+            {Array.from({ length: count }, (_, i) => (
+              <TestimonialCardSkeleton key={i} />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function TestimonialCardSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-sm rounded-2xl border border-slate-800 bg-slate-900/40 p-8 backdrop-blur-md">
+      {/* Index counter */}
+      <Skeleton className="mb-4 h-3 w-8" />
+      {/* Quote lines */}
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-5/6" />
+        <Skeleton className="h-3 w-4/6" />
+      </div>
+      {/* Author row */}
+      <div className="mt-6 flex justify-end">
+        <Skeleton className="h-3 w-28" />
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Page-level composition (used by RouteLoadingFallback and Suspense fallbacks)
+// ---------------------------------------------------------------------------
+
 /**
  * Full-page loading placeholder: hero + abbreviated doctors grid.
  * Used when a lazy page module is being loaded (route-level Suspense).

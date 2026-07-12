@@ -2,6 +2,7 @@ import type { AxiosInstance } from 'axios'
 import type {
   Doctor,
   Service,
+  Testimonial,
   ClinicInfo,
   TenantConfig,
   ContactFormData,
@@ -32,9 +33,31 @@ interface WpPost {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Strips HTML tags from WP rendered strings. */
+/** Reusable textarea used as a safe entity-decoding target. */
+const decodeTextArea = typeof document !== 'undefined'
+  ? document.createElement('textarea')
+  : (null as unknown as HTMLTextAreaElement)
+
+/**
+ * Decodes HTML entities (named, decimal numeric, hex numeric) into their
+ * characters. WP renders curly quotes, apostrophes, ampersands, em-dashes etc.
+ * as encoded entities (`&#039;`, `&amp;`, `&#8220;`), which must be decoded back to
+ * text before display — otherwise they render literally in the UI.
+ *
+ * Browser-only (textarea decoding); this module runs client-side (Vite SPA).
+ */
+function decodeHtmlEntities(html: string): string {
+  if (typeof document === 'undefined') return html
+  decodeTextArea.innerHTML = html
+  return decodeTextArea.value
+}
+
+/**
+ * Strips HTML tags from WP rendered strings and decodes any HTML entities left
+ * behind so the result is plain, display-ready text.
+ */
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').trim()
+  return decodeHtmlEntities(html.replace(/<[^>]*>/g, '')).trim()
 }
 
 /** Safely extracts a featured image URL from an embedded WP post. */
@@ -114,6 +137,31 @@ export async function fetchServices(api: AxiosInstance): Promise<Service[]> {
       name: stripHtml(post.title.rendered),
       description: stripHtml(post.content.rendered),
       iconUrl: typeof post.acf?.iconUrl === 'string' ? post.acf.iconUrl : undefined,
+      imageUrl: extractFeaturedImageUrl(post),
+    })
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Testimonials
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches the list of patient testimonials from the WP REST API and maps them
+ * to the typed `Testimonial` interface.
+ */
+export async function fetchTestimonials(api: AxiosInstance): Promise<Testimonial[]> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/testimonials', {
+    params: { _embed: true, per_page: 100 },
+  })
+
+  return data.map(
+    (post): Testimonial => ({
+      id: post.id,
+      quote: post.content?.rendered ? stripHtml(post.content.rendered) : '',
+      author: stripHtml(post.title.rendered),
+      rating: typeof post.acf?.rating === 'number' ? post.acf.rating : undefined,
+      location: typeof post.acf?.location === 'string' ? post.acf.location : undefined,
       imageUrl: extractFeaturedImageUrl(post),
     })
   )

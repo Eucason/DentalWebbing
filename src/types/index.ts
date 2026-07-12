@@ -1,6 +1,7 @@
 export * from './tenant'
 export * from './doctor'
 export * from './service'
+export * from './testimonial'
 export * from './clinic'
 export * from './contact'
 export * from './api'

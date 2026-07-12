@@ -2,6 +2,7 @@ import type {
   ClinicInfo,
   Doctor,
   Service,
+  Testimonial,
   ContactFormData,
   ContactFormResponse,
   TenantConfig,
@@ -170,6 +171,61 @@ export const MOCK_SERVICES: Service[] = [
       'Regular scale-and-polish, fluoride treatments, fissure sealants, and personalised oral hygiene coaching keep decay and gum disease at bay — and reduce long-term treatment costs.',
     iconUrl: '/icons/hygiene.svg',
     imageUrl: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=600',
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock Testimonials
+// ---------------------------------------------------------------------------
+// Optional fields (rating, location, imageUrl) are varied across entries so the
+// component's conditional rendering is exercised in offline/dev mode.
+export const MOCK_TESTIMONIALS: Testimonial[] = [
+  {
+    id: 1,
+    author: 'Sarah M.',
+    quote:
+      'I used to dread dental visits, but this team completely changed that. The staff is gentle, explain every step, and genuinely care about your comfort. My whole family comes here now.',
+    rating: 5,
+    location: 'Spring Valley, NJ',
+    imageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
+  },
+  {
+    id: 2,
+    author: 'James T.',
+    quote:
+      'Got same-day emergency care when I cracked a molar on a Friday evening. They stayed late, fixed it perfectly, and followed up the next morning. That level of dedication is rare.',
+    rating: 5,
+    location: 'Nanuet, NJ',
+  },
+  {
+    id: 3,
+    author: 'Priya K.',
+    quote:
+      'The Invisalign experience was seamless from the 3D scan to the final retainer. My confidence has never been higher, and the results came in under the estimated timeline.',
+    rating: 4,
+  },
+  {
+    id: 4,
+    author: 'Marcus L.',
+    quote:
+      'Teeth whitening results were stunning. In one session my smile went from years of coffee staining to genuinely bright. People keep asking what I did differently.',
+    rating: 5,
+    location: 'Monsey, NY',
+  },
+  {
+    id: 5,
+    author: 'Elena V.',
+    quote:
+      'Root canal sounds scary but they made it completely painless. The numbing was perfect, the procedure was quick, and I was back at work the same afternoon. Truly remarkable.',
+    rating: 5,
+  },
+  {
+    id: 6,
+    author: 'David R.',
+    quote:
+      'My kids actually look forward to their cleanings now. The hygienists are patient and make it educational. Finding a dentist the whole family loves is rare — we found ours.',
+    rating: 5,
+    location: 'Pearl River, NY',
   },
 ]
 
