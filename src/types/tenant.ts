@@ -10,6 +10,9 @@ export interface TenantSections {
   team?: boolean
   contact?: boolean
   testimonials?: boolean
+  faq?: boolean
+  socialProof?: boolean
+  insurance?: boolean
 }
 
 export interface TenantFeatures {
@@ -20,6 +23,9 @@ export interface TenantFeatures {
   blog?: boolean
   patientPortal?: boolean
   appointmentReminders?: boolean
+  faq?: boolean
+  socialProof?: boolean
+  insurance?: boolean
 }
 
 export interface TenantConfig {

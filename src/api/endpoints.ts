@@ -8,6 +8,9 @@ import type {
   ContactFormData,
   ContactFormResponse,
   WpPage,
+  Faq,
+  SocialMetrics,
+  InsuranceConfig,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -199,7 +202,104 @@ export async function fetchClinicInfo(api: AxiosInstance): Promise<ClinicInfo> {
       !Array.isArray(acf.socialLinks)
         ? (acf.socialLinks as Record<string, string>)
         : undefined,
+    socialMetrics: mapSocialMetrics(acf.socialMetrics),
+    insurance: mapInsuranceConfig(acf.insurance),
   }
+}
+
+// ---------------------------------------------------------------------------
+// ACF mappers (kept private — callers consume the typed ClinicInfo shape)
+// ---------------------------------------------------------------------------
+
+/**
+ * Safely maps a raw ACF social-metrics object (any shape from WP) to the typed
+ * `SocialMetrics` interface. Returns `null` when the input is missing or not a
+ * plain object, so the section can self-hide cleanly.
+ */
+function mapSocialMetrics(raw: unknown): SocialMetrics | undefined {
+  if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) return undefined
+  const v = raw as Record<string, unknown>
+
+  const accreditations = Array.isArray(v.accreditations)
+    ? (v.accreditations.filter((x) => typeof x === 'string') as string[])
+    : undefined
+  const awards = Array.isArray(v.awards)
+    ? (v.awards.filter((x) => typeof x === 'string') as string[])
+    : undefined
+
+  return {
+    googleRating: typeof v.googleRating === 'number' ? v.googleRating : undefined,
+    googleReviewCount: typeof v.googleReviewCount === 'number' ? v.googleReviewCount : undefined,
+    rating: typeof v.rating === 'number' ? v.rating : undefined,
+    reviewCount: typeof v.reviewCount === 'number' ? v.reviewCount : undefined,
+    yearsInBusiness: typeof v.yearsInBusiness === 'number' ? v.yearsInBusiness : undefined,
+    accreditations,
+    awards,
+  }
+}
+
+/**
+ * Safely maps a raw ACF insurance object (any shape from WP) to the typed
+ * `InsuranceConfig` interface. Returns `undefined` when the input is missing
+ * or not a plain object, so the section can self-hide cleanly.
+ */
+function mapInsuranceConfig(raw: unknown): InsuranceConfig | undefined {
+  if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) return undefined
+  const v = raw as Record<string, unknown>
+
+  const acceptedProviders = Array.isArray(v.acceptedProviders)
+    ? (v.acceptedProviders.filter((x) => typeof x === 'string') as string[])
+    : undefined
+  const paymentPlans = Array.isArray(v.paymentPlans)
+    ? (v.paymentPlans.filter((x) => typeof x === 'string') as string[])
+    : undefined
+
+  let newPatientSpecial: InsuranceConfig['newPatientSpecial']
+  if (
+    v.newPatientSpecial !== null &&
+    typeof v.newPatientSpecial === 'object' &&
+    !Array.isArray(v.newPatientSpecial)
+  ) {
+    const o = v.newPatientSpecial as Record<string, unknown>
+    if (typeof o.headline === 'string') {
+      newPatientSpecial = {
+        headline: o.headline,
+        description: typeof o.description === 'string' ? o.description : '',
+        price: typeof o.price === 'string' ? o.price : undefined,
+        ctaLabel: typeof o.ctaLabel === 'string' ? o.ctaLabel : undefined,
+        ctaHref: typeof o.ctaHref === 'string' ? o.ctaHref : undefined,
+      }
+    }
+  }
+
+  return {
+    acceptedProviders,
+    paymentPlans,
+    newPatientSpecial,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// FAQs
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches the list of frequently-asked questions from the WP REST API and maps
+ * them to the typed `Faq` interface.
+ */
+export async function fetchFaqs(api: AxiosInstance): Promise<Faq[]> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/faqs', {
+    params: { _embed: true, per_page: 100 },
+  })
+
+  return data.map(
+    (post): Faq => ({
+      id: post.id,
+      question: post.title?.rendered ? stripHtml(post.title.rendered) : '',
+      answer: post.content?.rendered ? stripHtml(post.content.rendered) : '',
+      category: typeof post.acf?.category === 'string' ? post.acf.category : undefined,
+    })
+  )
 }
 
 // ---------------------------------------------------------------------------

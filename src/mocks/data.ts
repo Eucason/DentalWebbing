@@ -7,6 +7,7 @@ import type {
   ContactFormResponse,
   TenantConfig,
   WpPage,
+  Faq,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -66,6 +67,27 @@ export const MOCK_CLINIC_INFO: ClinicInfo = {
     facebook: 'https://facebook.com/apexdental',
     instagram: 'https://instagram.com/apexdental',
     twitter: 'https://twitter.com/apexdental',
+  },
+  socialMetrics: {
+    googleRating: 4.9,
+    googleReviewCount: 312,
+    rating: 4.9,
+    reviewCount: 312,
+    yearsInBusiness: 2009,
+    accreditations: ['ADA Member', 'AGD Fellow'],
+    awards: ['Top Dentist 2024', 'Best of Spring Valley'],
+  },
+  insurance: {
+    acceptedProviders: ['Aetna', 'Cigna', 'Delta Dental', 'MetLife', 'United Healthcare'],
+    paymentPlans: ['In-house financing', 'CareCredit', '0% APR for 12 months'],
+    newPatientSpecial: {
+      headline: 'New Patient Special',
+      description:
+        'Comprehensive exam, X-rays, and a full cleaning — everything you need to start your smile journey.',
+      price: '£149',
+      ctaLabel: 'Claim Offer',
+      ctaHref: '#contact',
+    },
   },
 }
 
@@ -226,6 +248,47 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
       'My kids actually look forward to their cleanings now. The hygienists are patient and make it educational. Finding a dentist the whole family loves is rare — we found ours.',
     rating: 5,
     location: 'Pearl River, NY',
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock FAQs
+// ---------------------------------------------------------------------------
+export const MOCK_FAQS: Faq[] = [
+  {
+    id: 1,
+    category: 'Appointments',
+    question: 'How do I book an appointment?',
+    answer:
+      'You can book online using the form on this page, or call us directly during business hours. We confirm every appointment by phone or email within one business day.',
+  },
+  {
+    id: 2,
+    category: 'Appointments',
+    question: 'Do you accept walk-in or emergency patients?',
+    answer:
+      'Yes — we reserve time each day for dental emergencies including severe toothache, swelling, and cracked teeth. Call us and we will see you as quickly as possible, usually the same day.',
+  },
+  {
+    id: 3,
+    category: 'Insurance & Billing',
+    question: 'Which insurance plans do you accept?',
+    answer:
+      'We accept most major dental insurance plans including Aetna, Cigna, Delta Dental, MetLife, and United Healthcare. Contact us to confirm your specific plan is in-network.',
+  },
+  {
+    id: 4,
+    category: 'Insurance & Billing',
+    question: "What if I don't have dental insurance?",
+    answer:
+      'We offer flexible payment plans and a new-patient special for uninsured patients. Our team will outline all costs upfront so there are no surprises.',
+  },
+  {
+    id: 5,
+    category: 'Treatments',
+    question: 'Does a root canal hurt?',
+    answer:
+      'Modern root canals are performed under effective local anaesthesia and are no more uncomfortable than having a filling. Most patients return to normal activities the same day.',
   },
 ]
 

@@ -325,6 +325,99 @@ function TestimonialCardSkeleton() {
 }
 
 // ---------------------------------------------------------------------------
+// FAQ skeleton
+// ---------------------------------------------------------------------------
+// Section heading plus a vertical stack of question/answer placeholders.
+
+interface FaqSkeletonProps {
+  /** Number of FAQ row placeholders to render (default 4). */
+  count?: number
+}
+
+/**
+ * Vertical FAQ accordion placeholder matching the FaqAccordionSection layout.
+ */
+export function FaqSkeleton({ count = 4 }: FaqSkeletonProps) {
+  return (
+    <section className="w-full px-6 py-12" role="status" aria-label="Loading frequently asked questions">
+      <div className="mx-auto max-w-3xl">
+        <Skeleton className="mx-auto mb-2 h-5 w-32" />
+        <Skeleton className="mx-auto mb-10 h-8 w-full max-w-md" />
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: count }, (_, i) => (
+            <div key={i} className="rounded-xl border border-slate-100 bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <Skeleton className="h-5 w-full" />
+                <Skeleton className="h-4 w-4 shrink-0" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Social proof skeleton
+// ---------------------------------------------------------------------------
+// Centered metric chips + a grid of short trust-card placeholders.
+
+/**
+ * Trust-grid placeholder matching the SocialProofSection layout.
+ */
+export function SocialProofSkeleton() {
+  return (
+    <section className="w-full px-6 py-12" role="status" aria-label="Loading social proof">
+      <div className="mx-auto max-w-5xl">
+        <Skeleton className="mx-auto mb-10 h-6 w-full max-w-lg" />
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          {Array.from({ length: 4 }, (_, i) => (
+            <Skeleton key={i} className="h-14 w-40 rounded-full" />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Insurance skeleton
+// ---------------------------------------------------------------------------
+// Heading + two rows of provider/plan chips + an offer card placeholder.
+
+/**
+ * Insurance & affordability placeholder matching the InsuranceSection layout.
+ */
+export function InsuranceSkeleton() {
+  return (
+    <section className="w-full px-6 py-12" role="status" aria-label="Loading insurance information">
+      <div className="mx-auto max-w-5xl">
+        <Skeleton className="mx-auto mb-10 h-6 w-full max-w-md" />
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="flex flex-col gap-3">
+            <Skeleton className="h-5 w-40" />
+            <div className="flex flex-wrap gap-2">
+              {Array.from({ length: 5 }, (_, i) => (
+                <Skeleton key={i} className="h-9 w-28 rounded-full" />
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <Skeleton className="h-5 w-32" />
+            <div className="flex flex-wrap gap-2">
+              {Array.from({ length: 3 }, (_, i) => (
+                <Skeleton key={i} className="h-9 w-36 rounded-full" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Page-level composition (used by RouteLoadingFallback and Suspense fallbacks)
 // ---------------------------------------------------------------------------
 

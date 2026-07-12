@@ -57,6 +57,12 @@
       "category": "Up Next",
       "title": "Replace placeholder production API values in .env.production before deployment.",
       "status": "pending"
+    },
+    {
+      "id": "T_307",
+      "category": "Feature Modules",
+      "title": "High-conversion landing sections: FAQ accordion (SEO JSON-LD), Social Proof trust bar (Organization JSON-LD), Insurance & Payment options. All tenant-data-driven, self-hiding, behind feature flags, zero hardcoding.",
+      "status": "complete"
     }
   ],
   "completedLog": [

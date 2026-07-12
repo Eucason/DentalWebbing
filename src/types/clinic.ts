@@ -1,3 +1,5 @@
+import type { InsuranceConfig, SocialMetrics } from './faq'
+
 export interface ClinicInfo {
   heroTitle: string
   heroSubtitle: string
@@ -11,4 +13,14 @@ export interface ClinicInfo {
   contactEmail: string
   hours: Record<string, string>
   socialLinks?: Record<string, string>
+  /**
+   * Aggregate trust metrics surfaced by the SocialProof section.
+   * All fields optional — the section self-hides when no metric is supplied.
+   */
+  socialMetrics?: SocialMetrics
+  /**
+   * Insurance & affordability configuration surfaced by the Insurance section.
+   * All fields optional — the section self-hides when no config is supplied.
+   */
+  insurance?: InsuranceConfig
 }

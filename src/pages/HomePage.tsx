@@ -1,8 +1,11 @@
 import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { DoctorsSection } from '../components/sections/DoctorsSection'
+import { FaqAccordionSection } from '../components/sections/FaqAccordionSection'
 import { HeroSection } from '../components/sections/HeroSection'
+import { InsuranceSection } from '../components/sections/InsuranceSection'
 import { ServicesSection } from '../components/sections/ServicesSection'
+import { SocialProofSection } from '../components/sections/SocialProofSection'
 import { TestimonialsSection } from '../components/sections/TestimonialsSection'
 import { useSectionVisible } from '../hooks/useSectionVisible'
 
@@ -11,6 +14,9 @@ function HomePage() {
   const showServices = useSectionVisible('services')
   const showTeam = useSectionVisible('team')
   const showTestimonials = useSectionVisible('testimonials')
+  const showSocialProof = useSectionVisible('socialProof')
+  const showInsurance = useSectionVisible('insurance')
+  const showFaq = useSectionVisible('faq')
 
   return (
     <>
@@ -44,6 +50,24 @@ function HomePage() {
         // The component degrades to a centered symmetric layout if this tenant
         // has fewer than 3 testimonials (handled internally).
         showTestimonials && <TestimonialsSection limit={6} />
+      }
+
+      {
+        // Aggregate trust signals: ratings, review count, accreditations, awards.
+        // Self-hides when the tenant has no social metrics.
+        showSocialProof && <SocialProofSection />
+      }
+
+      {
+        // Accepted insurance, payment plans, and new-patient offer.
+        // Self-hides when the tenant has no insurance config.
+        showInsurance && <InsuranceSection />
+      }
+
+      {
+        // FAQ accordion, groups by category when present. Self-hides when the
+        // tenant has no FAQs.
+        showFaq && <FaqAccordionSection />
       }
     </>
   )
