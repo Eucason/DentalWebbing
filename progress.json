@@ -63,6 +63,18 @@
       "category": "Feature Modules",
       "title": "High-conversion landing sections: FAQ accordion (SEO JSON-LD), Social Proof trust bar (Organization JSON-LD), Insurance & Payment options. All tenant-data-driven, self-hiding, behind feature flags, zero hardcoding.",
       "status": "complete"
+    },
+    {
+      "id": "T_308",
+      "category": "Accessibility",
+      "title": "WCAG 2.1 AA compliance pass: skip link, route focus reset, mobile-menu focus trap + Escape, global :focus-visible ring, fallback alt text for operator-edited images, <address> for contact metadata, ul/li grid structures, sr-only live region announcements. Zero hardcoding.",
+      "status": "complete"
+    },
+    {
+      "id": "ACCESSIBILITY_WIDGET",
+      "category": "Accessibility",
+      "title": "Dynamic Accessibility Suite: tenant-scoped AccessibilitySuiteContext provider (localStorage-persisted prefs), floating <AccessibilityPanel /> dock with text scale, contrast mode, dyslexic font, text spacing, audio-help live region, virtual pointer target-sizing, and keyboard-map cheat sheet. Visual overlays applied to <html> via CSS classes. Zero hardcoded colors/URLs — all branding via useTenantColors() + CSS variables.",
+      "status": "complete"
     }
   ],
   "completedLog": [

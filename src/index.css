@@ -2,6 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* WCAG 2.1 AA — every interactive element gets a single, visible
+     :focus-visible indicator regardless of the tenant's brand colors. The
+     ring is offset (gapped) from the element so it stays visible against any
+     fill. This is the safety net for elements that do not carry a Tailwind
+     focus-visible utility — components that do (Header, Footer, sections)
+     layer their own :focus-visible:ring-* box-shadow on top, which is
+     independent of this outline and never conflicts. */
+  :focus-visible {
+    outline: 2px solid var(--tenant-primary, #2563eb);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Skip link: visually hidden until focused, then revealed. */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    z-index: 9999;
+    padding: 12px 20px;
+    background-color: #fff;
+    color: #1e293b;
+    border: 2px solid var(--tenant-primary, #2563eb);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: top 120ms ease;
+  }
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    top: 16px;
+    outline: 2px solid var(--tenant-primary, #2563eb);
+    outline-offset: 2px;
+  }
+
+  /* Honor the user's reduced-motion preference. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
 @layer components {
   .wp-content {
     @apply max-w-none text-base leading-7 text-slate-700;
@@ -45,5 +92,91 @@
 
   .wp-content img {
     @apply h-auto max-w-full rounded-lg;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Accessibility Suite — root-level visual + motor overlay classes
+ * --------------------------------------------------------------------- */
+/* Toggled onto <document.documentElement> by AccessibilitySuiteContext.
+ * IMPORTANT: pure visual assistive *enhancements* layered on top of the
+ * semantic WCAG baseline (skip link, focus rings, alt fallbacks) — never a
+ * replacement for structural compliance.
+ *
+ * Percentage font-scales scale cleanly off the root `rem` basis. Filters are
+ * used (not color re-skinning) so dynamic tenant branding is preserved while
+ * contrast is boosted on demand. */
+
+@layer utilities {
+  /* Visually hidden but kept readable by screen readers.
+     Tailwind ships `.sr-only`, but we keep a project-anchored alias so the
+     dependency on Tailwind scan path stays explicit. */
+  .a11y-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Text scale — large / extra-large (normal needs no class). */
+  .a11y-text-scale-lg {
+    font-size: 112.5%;
+  }
+  .a11y-text-scale-xl {
+    font-size: 125%;
+  }
+
+  /* Dyslexic typeface — applied on <html> via font-family; graceful
+     fallbacks keep rendering sane if the custom face fails to load. */
+  .a11y-dyslexic {
+    font-family: 'OpenDyslexic', 'Comic Sans MS', system-ui, sans-serif;
+    letter-spacing: 0.05em;
+  }
+
+  /* Expanded letter / word / line spacing (WCAG 1.4.12 text spacing). */
+  .a11y-spacing {
+    letter-spacing: 0.12em;
+    word-spacing: 0.16em;
+    line-height: 1.6 !important;
+  }
+
+  /* High contrast — pure contrast boost, branding colors retained. */
+  .a11y-high-contrast {
+    filter: contrast(175%);
+  }
+
+  /* Inverted luminance with hue rotation — images and video get a double
+     invert so their content appears natural against the flipped page. */
+  .a11y-inverted {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  .a11y-inverted img,
+  .a11y-inverted video,
+  .a11y-inverted [style*='background-image'] {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+  /* Monochrome — full greyscale. */
+  .a11y-monochrome {
+    filter: grayscale(100%);
+  }
+
+  /* Virtual pointer — enforce minimum 48x48dp hit target zone on interactive
+     controls (WCAG 2.5.5 target size) so motor-impaired and touch users can
+     actuate reliably. Applied broadly; components may opt their critical
+     targets up using the more specific rules below. */
+  .a11y-virtual-pointer button,
+  .a11y-virtual-pointer a,
+  .a11y-virtual-pointer input,
+  .a11y-virtual-pointer select,
+  .a11y-virtual-pointer textarea,
+  .a11y-virtual-pointer [role='button'] {
+    min-width: 48px !important;
+    min-height: 48px !important;
   }
 }
