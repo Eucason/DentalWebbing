@@ -54,23 +54,33 @@ export function DoctorsSection() {
     <section className="w-full px-6 py-16 bg-slate-50" aria-label="Meet our doctors">
       <div className="mx-auto max-w-5xl">
         {/* ── Section header ───────────────────────────────────────────── */}
-        <div className="mb-10 text-center">
+        <header className="mb-10 text-center">
           <h2 className="text-3xl font-bold text-slate-950 md:text-4xl">Meet Our Doctors</h2>
           <p className="mt-3 text-lg text-slate-600">
             A team of experienced specialists dedicated to your comfort and care.
           </p>
-        </div>
+        </header>
 
         {/* ── Doctor grid ──────────────────────────────────────────────── */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/*
+          The grid is a real <ul>/<li> list — screen readers announce the
+          number of doctors and let users move between them. The alt text
+          falls back to a generic description when an operator leaves the
+          doctor's name blank (never trust empty operator-edited fields).
+        */}
+        <ul
+          className="grid list-none gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3"
+          aria-label="Clinic medical team"
+        >
           {data.map((doctor) => (
-            <Card key={doctor.id} className="flex flex-col">
+            <li key={doctor.id}>
+            <Card className="flex h-full flex-col">
               {/* Avatar / portrait */}
               <div className="flex justify-center bg-white px-5 pt-6">
                 {doctor.imageUrl ? (
                   <img
                     src={doctor.imageUrl}
-                    alt={`Portrait of ${doctor.name}`}
+                    alt={doctor.name?.trim() ? `Headshot portrait of ${doctor.name}` : 'Clinic medical professional headshot'}
                     className="h-32 w-32 rounded-full object-cover shadow-md ring-4 ring-white"
                     loading="lazy"
                   />
@@ -79,7 +89,7 @@ export function DoctorsSection() {
                   <div
                     className="flex h-32 w-32 items-center justify-center rounded-full bg-[var(--tenant-primary)]/10 text-3xl font-semibold text-[var(--tenant-primary)] shadow-md ring-4 ring-white"
                     role="img"
-                    aria-label={`Avatar for ${doctor.name}`}
+                    aria-label={doctor.name?.trim() ? `Avatar for ${doctor.name}` : 'Avatar for clinic medical professional'}
                   >
                     {getInitials(doctor.name)}
                   </div>
@@ -103,7 +113,7 @@ export function DoctorsSection() {
                 )}
 
                 {doctor.qualifications && doctor.qualifications.length > 0 && (
-                  <ul className="mt-2 flex flex-wrap justify-center gap-1.5">
+                  <ul className="mt-2 flex list-none flex-wrap justify-center gap-1.5 p-0" aria-label={`Qualifications for ${doctor.name}`}>
                     {doctor.qualifications.map((qual) => (
                       <li
                         key={qual}
@@ -138,8 +148,9 @@ export function DoctorsSection() {
                 </div>
               </div>
             </Card>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

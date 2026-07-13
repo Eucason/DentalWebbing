@@ -62,26 +62,34 @@ export function ServicesSection({ limit }: ServicesSectionProps) {
     <section className="w-full px-6 py-16 bg-white" aria-label="Our services">
       <div className="mx-auto max-w-5xl">
         {/* ── Section header ───────────────────────────────────────────── */}
-        <div className="mb-10 text-center">
+        <header className="mb-10 text-center">
           <h2 className="text-3xl font-bold text-slate-950 md:text-4xl">Our Services</h2>
           <p className="mt-3 text-lg text-slate-600">
             Comprehensive dental care for every stage of life.
           </p>
-        </div>
+        </header>
 
         {/* ── Services grid ─────────────────────────────────────────────── */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/*
+          Real <ul>/<li> list so screen readers announce the service count.
+          Alt text is derived from the service's own name but falls back to
+          a generic description when the operator has left it blank.
+        */}
+        <ul
+          className="grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3"
+          aria-label="Dental services"
+        >
           {(limit ? data.slice(0, limit) : data).map((service) => (
+            <li key={service.id}>
             <Card
-              key={service.id}
-              className="flex flex-col transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-[var(--tenant-primary)]"
+              className="flex h-full flex-col transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-[var(--tenant-primary)]"
             >
               {/* Image / icon header */}
               {service.imageUrl ? (
                 <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100">
                   <img
                     src={service.imageUrl}
-                    alt={`Illustration of ${service.name}`}
+                    alt={service.name?.trim() ? `Illustration of ${service.name}` : 'Dental service illustration'}
                     className="h-full w-full object-cover"
                     loading="lazy"
                   />
@@ -115,7 +123,7 @@ export function ServicesSection({ limit }: ServicesSectionProps) {
                   <Link
                     to={`/services#${service.slug}`}
                     className="inline-flex items-center rounded text-sm font-medium text-[var(--tenant-primary)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
-                    aria-label={`Learn more about ${service.name}`}
+                    aria-label={service.name?.trim() ? `Learn more about ${service.name}` : 'Learn more about this service'}
                   >
                     Learn more
                     <svg
@@ -133,8 +141,9 @@ export function ServicesSection({ limit }: ServicesSectionProps) {
                 </div>
               </div>
             </Card>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

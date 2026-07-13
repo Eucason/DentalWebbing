@@ -39,11 +39,11 @@ export function Footer() {
           </nav>
         )}
 
-        <div className="flex flex-col gap-3">
+        <address className="not-italic">
           <h2 className="font-semibold text-slate-900">Contact</h2>
-          {config.address && <p className="text-sm text-slate-600">{config.address}</p>}
+          {config.address && <p className="text-sm text-slate-600 not-italic">{config.address}</p>}
           {config.contactPhone && (
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 not-italic">
               <a
                 href={`tel:${config.contactPhone}`}
                 className="rounded hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
@@ -53,7 +53,7 @@ export function Footer() {
             </p>
           )}
           {config.contactEmail && (
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 not-italic">
               <a
                 href={`mailto:${config.contactEmail}`}
                 className="rounded hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--tenant-primary)]"
@@ -62,7 +62,7 @@ export function Footer() {
               </a>
             </p>
           )}
-        </div>
+        </address>
       </PageWrapper>
 
       <PageWrapper className="mt-12 border-t border-slate-200 pt-6 text-center text-xs text-slate-500">

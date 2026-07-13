@@ -115,7 +115,7 @@ export function HeroSection() {
           {data.heroImageUrl ? (
             <img
               src={data.heroImageUrl}
-              alt={`${data.heroTitle} — clinic hero image`}
+              alt={data.heroTitle?.trim() ? `${data.heroTitle} — clinic hero image` : 'Clinic hero image'}
               className="aspect-[4/3] w-full rounded-2xl object-cover shadow-2xl"
               loading="eager"
             />
