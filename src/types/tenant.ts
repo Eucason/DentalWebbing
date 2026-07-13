@@ -13,6 +13,8 @@ export interface TenantSections {
   faq?: boolean
   socialProof?: boolean
   insurance?: boolean
+  /** Dynamic embedded-map + opening-hours / contact card section. */
+  map?: boolean
 }
 
 export interface TenantFeatures {

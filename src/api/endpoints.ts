@@ -204,6 +204,7 @@ export async function fetchClinicInfo(api: AxiosInstance): Promise<ClinicInfo> {
         : undefined,
     socialMetrics: mapSocialMetrics(acf.socialMetrics),
     insurance: mapInsuranceConfig(acf.insurance),
+    mapIframeUrl: typeof acf.mapIframeUrl === 'string' ? acf.mapIframeUrl : undefined,
   }
 }
 

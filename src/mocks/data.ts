@@ -89,6 +89,8 @@ export const MOCK_CLINIC_INFO: ClinicInfo = {
       ctaHref: '#contact',
     },
   },
+  mapIframeUrl:
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.816!2d36.8219!3d-1.2833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTYnNTkuOSJTIDM2wrA0OScxOS4xIkU!5e0!3m2!1sen!2ske!4v0000000000000',
 }
 
 // ---------------------------------------------------------------------------

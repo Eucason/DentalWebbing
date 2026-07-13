@@ -23,4 +23,10 @@ export interface ClinicInfo {
    * All fields optional — the section self-hides when no config is supplied.
    */
   insurance?: InsuranceConfig
+  /**
+   * Sanitized Google Maps embed URL provided by the headless backend (ACF).
+   * When present the section renders an interactive iframe; when absent it
+   * falls back to a structured contact + directions layout.
+   */
+  mapIframeUrl?: string
 }
