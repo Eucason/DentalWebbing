@@ -1,10 +1,12 @@
 import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { ContactSection } from '../components/sections/ContactSection'
+import { MapSection } from '../components/sections/MapSection'
 import { useSectionVisible } from '../hooks/useSectionVisible'
 
 function ContactPage() {
   const showContact = useSectionVisible('contact')
+  const showMap = useSectionVisible('map')
 
   return (
     <>
@@ -23,6 +25,7 @@ function ContactPage() {
       </div>
 
       {showContact && <ContactSection />}
+      {showMap && <MapSection />}
     </>
   )
 }

@@ -151,6 +151,7 @@ export async function fetchClinicInfo(api: AxiosInstance): Promise<ClinicInfo> {
       !Array.isArray(acf.socialLinks)
         ? (acf.socialLinks as Record<string, string>)
         : undefined,
+    mapIframeUrl: typeof acf.mapIframeUrl === 'string' ? acf.mapIframeUrl : undefined,
   }
 }
 

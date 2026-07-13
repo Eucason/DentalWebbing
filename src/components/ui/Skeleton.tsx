@@ -226,6 +226,62 @@ export function ContactSkeleton() {
 }
 
 // ---------------------------------------------------------------------------
+// Map / Location skeleton
+// ---------------------------------------------------------------------------
+// Two-column layout: hours + directions column on the left, a tall map frame
+// placeholder on the right. Matches MapSection so there is no layout shift.
+// ---------------------------------------------------------------------------
+
+/**
+ * Map & Location section loading placeholder matching the MapSection layout.
+ */
+export function MapSkeleton() {
+  return (
+    <section
+      className="w-full px-6 py-12"
+      role="status"
+      aria-label="Loading location and map"
+    >
+      <div className="mx-auto max-w-5xl">
+        {/* Section heading */}
+        <Skeleton className="mb-8 h-8 w-52" />
+
+        <div className="grid gap-10 lg:grid-cols-2">
+          {/* ── Hours + contact column ──────────────────────────────────── */}
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              {/* Phone row */}
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-4 rounded-full" />
+                <Skeleton className="h-4 w-36" />
+              </div>
+              {/* Directions button */}
+              <Skeleton className="mt-1 h-10 w-40 rounded-full" />
+            </div>
+
+            {/* Hours rows */}
+            <div className="mt-2 flex flex-col gap-3">
+              {Array.from({ length: 5 }, (_, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-28" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Map frame column ─────────────────────────────────────────── */}
+          <div className="flex flex-col gap-4">
+            <Skeleton className="aspect-[16/10] w-full rounded-xl" />
+            <Skeleton className="h-5 w-3/4" />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Page-level composition (used by RouteLoadingFallback and Suspense fallbacks)
 // ---------------------------------------------------------------------------
 

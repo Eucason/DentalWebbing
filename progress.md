@@ -2,19 +2,20 @@
 
 **Project:** A multi-tenant dental clinic frontend that resolves clinic branding, content, navigation, and API configuration from a WordPress-backed SaaS backend.
 **Stack:** Vite 8 - React 19 - TypeScript 6 strict - React Router v7 - TanStack Query v5 - Axios - Tailwind CSS v3 - React Hook Form - Zod
-**Last Updated:** 2026-07-04 - GitHub Copilot
+**Last Updated:** 2026-07-13 - Claude Code
 
 ---
 
 ## Status
-**Completed**
+**In Progress**
 
-Frontend multi-tenant foundations are now fully in place through dynamic routing, tenant navigation, tenant-scoped query keys, section visibility, and feature flags. Outstanding tasks are backend contracts.
+Map & Location section shipped across the type, API, mock, skeleton, component, and layout layers. Verified green build and lint-clean.
 
 ---
 
 ## Up Next
 - [ ] Update the WordPress tenant config endpoint to return `sections`, `navigation`, and `features`.
+- [ ] Update the WordPress `dentalwebbing/v1/clinic-info` endpoint to return `mapIframeUrl` (sanitized Google Maps embed URL).
 - [ ] Verify `GET /wp-json/wp/v2/pages?slug=...&_embed=true` against a real tenant and confirm the resolved base URL/path contract.
 - [ ] Decide whether nested WordPress page paths should resolve by final slug only or full path hierarchy.
 - [ ] Replace placeholder production API values in `.env.production` before deployment.
@@ -47,9 +48,20 @@ Memoized tenant-scoped Axios clients across all data hooks via `useApiClient` to
 ### Mock Coverage
 Mock mode now includes tenant navigation plus a sample `invisalign-special` WordPress page so the dynamic route can be tested offline with `VITE_USE_MOCKS=true`.
 
+### Map & Location Section
+Added a fully dynamic, accessible, responsive Map & Location section (`MapSection`). It shares the tenant `ClinicInfo` pipeline (extended with an optional `mapIframeUrl` field), so address, phone, hours and the embedded map resolve at runtime from the headless backend — zero hardcoded coordinates, keys or brand colours (all via `var(--tenant-*)` tokens and neutral slate). Includes a `map` section-visibility flag, a matching `MapSkeleton` for no-shift loading, presence-gating (online-only clinics return null), an `<dl>/<dt>/<dd>` hours list, a dynamic iframe `title`, an adjacent text address link for screen-reader/keyboard users, and a Google Directions fallback when no embed URL is present. Verified green build and lint-clean.
+
 ---
 
 ## Session Log
+
+### 2026-07-13 - Claude Code
+- Implemented `src/components/sections/MapSection.tsx` — dynamic, accessible (WCAG 2.1 AA), responsive map + location/contact section gating on a new `map` section flag.
+- Extended `ClinicInfo` type + `fetchClinicInfo` ACF mapper + `MOCK_CLINIC_INFO` with `mapIframeUrl`.
+- Added `MapSkeleton` to avoid layout shift during data load.
+- Mounted `<MapSection />` (and `<ContactSection />`) on the Contact page, each independently gated by `useSectionVisible`.
+- Excluded generated `.claude/` scaffolding from the ESLint pass (analogous to `dist`).
+- Verified `npm run build` (tsc + vite) and `npm run lint` are green on app source.
 
 ### 2026-07-04 - GitHub Copilot
 - Added root `.editorconfig` and `.gitattributes` to enforce UTF-8, LF, final newlines, and 2-space indentation across the repo.

@@ -10,6 +10,8 @@ export interface TenantSections {
   team?: boolean
   contact?: boolean
   testimonials?: boolean
+  /** Dynamic embedded-map + opening-hours / contact card section. */
+  map?: boolean
 }
 
 export interface TenantFeatures {
