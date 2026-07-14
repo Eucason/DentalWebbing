@@ -19,9 +19,8 @@ Supplements `BuildPhilosophy.md` / `Goal.md` / `progress.json`. Task detail live
 - **R3 Flag default — BLOCKS ALL PHASE-4 FLAG WORK until resolved.**
   `useFeatureFlag`/`useSectionVisible` are opt-out (`?? true`). New flags will default
   `true` for existing tenants unless: (a) hooks take an explicit per-call default, or
-  (b) tenant-config always returns explicit `false` for new keys. Resolve first, store
-  as `decision:flag-default` via `memory store --namespace decisions --key flag-default
-  --value "<resolution>"`. Don't add a flag before this lands.
+  (b) tenant-config always returns explicit `false` for new keys. Resolve first. Don't
+  add a flag before this lands.
 - **R4 HIPAA non-PHI** — reuse `ContactForm.tsx`'s existing Zod/disclaimer scaffolding.
   Never add medical history, meds, SSN, subscriber ID, or chart data to any native
   form/CPT. PHI-adjacent → hand off to BAA vendor (NexHealth, Phreesia, Yapi,
@@ -46,22 +45,11 @@ npm run build                      # must succeed
 node scripts/progress-tracker.js update <TASK_ID> complete
 ```
 
-## Coordination — use root CLAUDE.md's SendMessage pipeline, not a generic swarm
+## Coordination
 
-Map each Phase-4 task to the existing named-agent pipeline pattern already defined in
-root `CLAUDE.md` (researcher → architect → coder → tester → reviewer), scoped to one
-`phase4-tasks.json` item per pipeline run. Spawn all agents in one message,
-`run_in_background: true`, per root rules. Don't spin up a second, uncoordinated swarm
-mechanism for Phase 4 — this is exactly what the existing Agent Comms section is for.
-
-Before starting a task:
-```bash
-npx @claude-flow/cli@latest memory search --query "<task keywords>" --namespace decisions
-```
-After completing one:
-```bash
-npx @claude-flow/cli@latest memory store --namespace decisions --key "<item_id>" --value "<1-2 sentence decision summary>"
-```
+Map each Phase-4 task to a named-agent pipeline (researcher → architect → coder →
+tester → reviewer), scoped to one `phase4-tasks.json` item per pipeline run. Spawn all
+agents in one message, `run_in_background: true`.
 
 ## Git
 

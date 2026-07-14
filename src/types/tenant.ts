@@ -28,6 +28,9 @@ export interface TenantFeatures {
   faq?: boolean
   socialProof?: boolean
   insurance?: boolean
+  // ── Phase-4 flags (opt-in; consumers pass { defaultValue: false }) ──────────
+  /** B1 — before_after gallery section. */
+  beforeAfterGallery?: boolean
 }
 
 export interface TenantConfig {

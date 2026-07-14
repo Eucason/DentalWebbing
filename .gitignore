@@ -29,8 +29,5 @@ dist-ssr
 .env*
 !.env.example
 
-# Claude Code / swarm tooling state (ephemeral, local-only)
+# Claude Code state (ephemeral, local-only)
 .claude/
-.claude-flow/
-.swarm/
-.mcp.json
