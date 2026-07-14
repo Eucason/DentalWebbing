@@ -1,0 +1,343 @@
+{
+  "note": "Feed a single item to a task/swarm, not this whole file. implementation_pattern tells you whether this is a new native CPT (mirrors useDoctors()), an ACF-only extension of an existing CPT (no new hook shape, just extend the return + a mapper), or a custom endpoint (rare — reserved for aggregation like clinic-info). Merge completed items into progress.json's task ledger via progress-tracker.js rather than tracking status here.",
+
+  "prerequisites_block_everything_below": [
+    {
+      "id": "PRE-1",
+      "title": "Resolve feature-flag default direction (R3)",
+      "why": "useFeatureFlag/useSectionVisible are documented as hard opt-out (?? true). Every Phase-4 flag added before this is resolved will silently default to true for existing tenants.",
+      "resolution_options": [
+        "Extend hooks to accept an explicit per-call default (useFeatureFlag(name, { defaultValue: false }))",
+        "Tenant-config backend always returns explicit false for new flag keys"
+      ],
+      "acceptance_criteria": ["Decision recorded in shared memory as decision:flag-default", "At least one new Phase-4 flag proven to default off for a tenant-config row missing that key"]
+    },
+    {
+      "id": "PRE-2",
+      "title": "T_302 — tenant-config endpoint returns sections/navigation/features",
+      "why": "Already an open blocker in progress.json. Without it, no Phase-4 flag can be validated against a real tenant — only against VITE_USE_MOCKS=true.",
+      "note": "Not duplicating T_302 here — just making the Phase-4 dependency explicit. Track status in progress.json, not this file."
+    }
+  ],
+
+  "recommended_order": ["PRE-1", "PRE-2", "B2", "B5", "B6", "B1", "B4", "B3", "B7", "B10", "B9", "B8", "B11", "B21", "B12", "B13", "B14", "B15", "B16", "B17", "B18", "B19", "B20"],
+
+  "items": [
+    {
+      "id": "B2",
+      "tier": "P0",
+      "title": "Testimonial video + source fields",
+      "implementation_pattern": "acf_extension_only",
+      "effort_days": 0.5,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1", "R2", "R9"],
+      "scope": {
+        "cpt_extended": "testimonials (existing)",
+        "new_fields": ["video_url", "video_thumbnail", "source_platform", "treatment_received"],
+        "hook_touched": "useTestimonials() — extend return shape, no new endpoint"
+      },
+      "acceptance_criteria": [
+        "useTestimonials() returns new fields alongside existing quote/author/rating/location",
+        "TestimonialsSection.tsx renders inline player when video_url present, existing text layout otherwise",
+        "src/mocks/data.ts testimonial fixtures updated (R9)",
+        "No hardcoded video player styling — tenant CSS vars only"
+      ]
+    },
+    {
+      "id": "B5",
+      "tier": "P0",
+      "title": "Tenant-scoped LocalBusiness + Review schema (extends existing FAQPage/Organization JSON-LD)",
+      "implementation_pattern": "client_side_generation",
+      "effort_days": 1,
+      "depends_on": [],
+      "guardrails": ["R1", "R8"],
+      "scope": {
+        "reuses": "src/utils/jsonLd.ts already builds Organization + FAQPage schema from clinic-info/faqs — extend, don't rebuild",
+        "new_schema_types": ["LocalBusiness->Dentist", "Review", "AggregateRating"],
+        "data_sources": "clinic-info (existing) + testimonials (existing, once B2 fields land for AggregateRating)"
+      },
+      "acceptance_criteria": [
+        "Schema validates against Google's Rich Results test",
+        "No tenant-specific values hardcoded in the generator (R1)",
+        "Self-hides/omits schema blocks gracefully when source data is absent"
+      ]
+    },
+    {
+      "id": "B6",
+      "tier": "P0",
+      "title": "Extend ContactForm for location-aware appointment requests + non-PHI intake handoff",
+      "implementation_pattern": "extend_existing_component",
+      "effort_days": 1.5,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1", "R2", "R4", "R6"],
+      "scope": {
+        "existing": "ContactForm.tsx already Zod-validates name/email/phone with a non-PHI disclaimer — reuse this scaffolding",
+        "new_fields": ["location_id (only relevant once B9 exists)", "preferred_time", "reason_for_visit (free text, non-PHI)"],
+        "new_endpoint": "POST /wp-json/dentalwebbing/v1/contact-lease — genuine custom-endpoint case per R8, this is a write + light aggregation, not a CPT collection"
+      },
+      "acceptance_criteria": [
+        "New fields still Zod-validated, still carry the non-PHI disclaimer",
+        "Any medical-history step is a hand-off link to a BAA-covered vendor, never a native field (R4)",
+        "Works with VITE_USE_MOCKS=true (mock submit path)"
+      ]
+    },
+    {
+      "id": "B1",
+      "tier": "P0",
+      "title": "before_after CPT + /gallery section",
+      "implementation_pattern": "native_cpt",
+      "effort_days": 3,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1", "R2", "R7", "R8", "R9"],
+      "scope": {
+        "cpt": "before_after",
+        "fields": ["case_title", "treatment_type", "description", "dentist (relationship to doctors)", "before_image", "after_image", "is_featured", "display_order"],
+        "hook": "useBeforeAfter() mirroring useDoctors(): GET /wp-json/wp/v2/before-after?_embed&per_page=100",
+        "flag": "beforeAfterGallery (opt-in false, per PRE-1 resolution)",
+        "gate_behavior": "self-hide (R2) — not 'coming soon'"
+      },
+      "acceptance_criteria": [
+        "New route/section self-hides when array is empty",
+        "Filterable by treatment_type client-side",
+        "Sorted by display_order ASC",
+        "Featured cases pin to top",
+        "Entry added to QUERY_KEYS factory (R8) and src/mocks/data.ts (R9)"
+      ]
+    },
+    {
+      "id": "B4",
+      "tier": "P0",
+      "title": "Service pricing fields + interactive before/after slider",
+      "implementation_pattern": "acf_extension_only + new_component",
+      "effort_days": 2,
+      "depends_on": ["B1"],
+      "guardrails": ["R1", "R2"],
+      "scope": {
+        "cpt_extended": "services (existing) — no new endpoint",
+        "new_fields": ["starting_price", "price_range_max", "price_suffix", "is_price_upon_request", "price_fine_print", "financing_note", "procedure_time", "recovery_time", "gallery", "icon_override"],
+        "slider": "keyboard-operable, touch-friendly, ARIA slider role, respects prefers-reduced-motion; consumes before_image/after_image shape from B1",
+        "flag": "servicePricing (opt-in false)"
+      },
+      "acceptance_criteria": [
+        "Price band hides when is_price_upon_request is true",
+        "Slider passes keyboard-only operation test",
+        "Slider respects prefers-reduced-motion",
+        "src/mocks/data.ts services fixtures updated (R9)"
+      ]
+    },
+    {
+      "id": "B3",
+      "tier": "P0",
+      "title": "special_offer CPT + offer band",
+      "implementation_pattern": "native_cpt",
+      "effort_days": 2,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1", "R2", "R9"],
+      "scope": {
+        "cpt": "special_offer",
+        "fields": ["headline", "offer_description", "price_display", "regular_price", "image", "cta_label", "cta_url", "start_date", "end_date", "is_active", "display_order"],
+        "hook": "useSpecialOffers() mirroring useTestimonials() — client-side filters expired/inactive offers, same as testimonials' <3-item degrade pattern",
+        "flag": "specialOffers (opt-in false)",
+        "gate_behavior": "self-hide (R2)"
+      },
+      "acceptance_criteria": [
+        "Offer auto-hides outside start_date/end_date window (client-side filter, no custom endpoint needed)",
+        "is_active acts as manual override",
+        "Band self-hides with zero active offers"
+      ]
+    },
+    {
+      "id": "B7",
+      "tier": "P1",
+      "title": "Doctor credentials repeater + drawer",
+      "implementation_pattern": "acf_extension_only",
+      "effort_days": 1.5,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1", "R2"],
+      "scope": {
+        "cpt_extended": "doctors (existing)",
+        "new_fields": ["credentials (repeater: credential_title, credential_type, institution, year)", "years_in_practice", "languages_spoken", "personal_bio_video_url", "fun_fact"],
+        "flag": "teamCredentials (opt-in false)"
+      },
+      "acceptance_criteria": [
+        "Mapper normalises legacy qualifications[] and new credentials repeater into one chip list — never branch UI on which shape arrived",
+        "Drawer self-hides with zero credentials",
+        "src/mocks/data.ts doctor fixtures updated (R9)"
+      ]
+    },
+    {
+      "id": "B10",
+      "tier": "P1",
+      "title": "case_study CPT + smile-stories band",
+      "implementation_pattern": "native_cpt",
+      "effort_days": 2,
+      "depends_on": ["B1"],
+      "guardrails": ["R1", "R2", "R7", "R9"],
+      "scope": {
+        "cpt": "case_study",
+        "fields": ["patient_name (pseudonymised)", "treatment_type", "story_body", "before_image", "after_image", "video_url", "doctor (relationship)", "display_order"],
+        "hook": "useCaseStudies() mirroring useDoctors()",
+        "flag": "caseStudies (opt-in false)",
+        "gate_behavior": "self-hide"
+      },
+      "acceptance_criteria": [
+        "patient_name field rejects full/real-name patterns in review (R7)",
+        "Band self-hides with zero case studies"
+      ]
+    },
+    {
+      "id": "B9",
+      "tier": "P1",
+      "title": "location CPT + amenity chips + office-tour gallery",
+      "implementation_pattern": "native_cpt",
+      "effort_days": 2.5,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1", "R2", "R9"],
+      "scope": {
+        "open_question": "MUST resolve decision:B9-location-model before coding (see CLAUDE.md) — does this supersede clinic-info's singleton address for multi-location tenants, or coexist?",
+        "cpt": "location",
+        "fields": ["address_line_1/2", "city", "state", "zip", "phone", "map_iframe_url", "hours (repeater)", "amenity_tags", "office_photos", "parking_notes"],
+        "hook": "useLocations()",
+        "flag": "locationAmenities (opt-in false)",
+        "touches": ["MapSection.tsx", "ContactSection.tsx"]
+      },
+      "acceptance_criteria": [
+        "decision:B9-location-model recorded before any component changes",
+        "Single-location tenants unaffected (clinic-info path still works)",
+        "Multi-location tenants render one card per location",
+        "Amenity chips self-hide per-tag when absent"
+      ]
+    },
+    {
+      "id": "B8",
+      "tier": "P1",
+      "title": "financing_option CPT + financing band",
+      "implementation_pattern": "native_cpt",
+      "effort_days": 2,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1", "R2", "R9"],
+      "scope": {
+        "cpt": "financing_option",
+        "fields": ["provider_name", "description", "is_in_house_plan", "monthly_payment_display", "pre_qualify_url", "accepted", "logo", "display_order"],
+        "hook": "useFinancingOptions()",
+        "flag": "financing (opt-in false)",
+        "gate_behavior": "self-hide"
+      },
+      "acceptance_criteria": ["Band self-hides with zero options", "is_in_house_plan drives distinct styling from third-party badges"]
+    },
+    {
+      "id": "B11",
+      "tier": "P1",
+      "title": "Multi-tenant NexHealth-style scheduling embed",
+      "implementation_pattern": "third_party_embed",
+      "effort_days": 3,
+      "depends_on": ["B6"],
+      "guardrails": ["R4", "R6", "R8"],
+      "scope": { "pattern": "iframe or JS snippet + REST path, sandboxed per tenant", "reference_vendor": "NexHealth Synchronizer, referenced in Goal.md's HIPAA stance" },
+      "acceptance_criteria": ["Embed sandboxed per R6", "No PHI crosses into analytics on this route (R5)"]
+    },
+    {
+      "id": "B21",
+      "tier": "P1 (pulled forward from P2)",
+      "title": "BAA registry + PHI-flow gate + script isolation enforcement",
+      "implementation_pattern": "infra",
+      "effort_days": 2,
+      "depends_on": ["B6", "B11"],
+      "guardrails": ["R4", "R6"],
+      "why_pulled_forward": "B11 and B20 (chat adapter) aren't actually safe to ship without this gate existing first, even though the original roadmap tiered it P2.",
+      "acceptance_criteria": ["Per-tenant table of vendor BAA status", "PHI-adjacent flows blocked if no BAA on file", "Audit log on every PHI-adjacent read/write"]
+    },
+    {
+      "id": "B12",
+      "tier": "P1",
+      "title": "Analytics blueprint (GTM + GA4 + Meta CAPI + CallRail DNI)",
+      "implementation_pattern": "infra",
+      "effort_days": 2,
+      "depends_on": [],
+      "guardrails": ["R5", "R8"],
+      "acceptance_criteria": ["IP anonymization on", "PII transmission disabled", "Health-form routes excluded from all trackers"]
+    },
+    {
+      "id": "B13",
+      "tier": "P1",
+      "title": "Multi-channel mobile sticky CTA bar (tenant-configurable)",
+      "implementation_pattern": "new_component",
+      "effort_days": 2,
+      "depends_on": ["PRE-1"],
+      "guardrails": ["R1"],
+      "scope": { "reference_pattern": "Dallas Cosmetic Dental 4-tab Phone/SMS/Email/Callback" },
+      "acceptance_criteria": ["Tabs configurable per tenant without code changes", "Each tab expands inline form, no navigation away"]
+    },
+    {
+      "id": "B14",
+      "tier": "P1",
+      "title": "Full CMP cookie consent",
+      "implementation_pattern": "new_component",
+      "effort_days": 1.5,
+      "depends_on": ["B12"],
+      "guardrails": ["R1", "R6"],
+      "acceptance_criteria": ["Granular reject/accept controls", "Branded via tenant CSS vars", "Blocks trackers pre-consent"]
+    },
+    {
+      "id": "B15",
+      "tier": "P2",
+      "title": "Insurance plan detail fields",
+      "implementation_pattern": "acf_extension_only",
+      "effort_days": 2,
+      "depends_on": [],
+      "guardrails": ["R1", "R4"],
+      "scope": { "cpt_extended": "clinic-info.insurance (existing singleton field group)" },
+      "acceptance_criteria": ["Fields limited to plan-level detail, never subscriber ID/group tied to a person (R4)"]
+    },
+    {
+      "id": "B16",
+      "tier": "P2",
+      "title": "Treatment quiz",
+      "implementation_pattern": "new_component",
+      "effort_days": 4,
+      "depends_on": [],
+      "guardrails": ["R1", "R2", "R4"],
+      "acceptance_criteria": ["Quiz result never stores PHI-adjacent answers"]
+    },
+    {
+      "id": "B17",
+      "tier": "P2",
+      "title": "Membership-plan filter + band",
+      "implementation_pattern": "acf_extension_only",
+      "effort_days": 1,
+      "depends_on": ["B8"],
+      "guardrails": ["R1", "R2"],
+      "acceptance_criteria": ["Reuses financing_option.is_in_house_plan filter, no new CPT"]
+    },
+    {
+      "id": "B18",
+      "tier": "P2",
+      "title": "Service-area / zip-radius fields",
+      "implementation_pattern": "acf_extension_only",
+      "effort_days": 1,
+      "depends_on": [],
+      "guardrails": ["R1"],
+      "acceptance_criteria": ["Feeds local SEO schema from B5"]
+    },
+    {
+      "id": "B19",
+      "tier": "P2",
+      "title": "Review-aggregation service (Birdeye/Podium/GBP)",
+      "implementation_pattern": "third_party_embed",
+      "effort_days": 3,
+      "depends_on": ["B5"],
+      "guardrails": ["R1", "R8"],
+      "acceptance_criteria": ["Tenant-isolated API credentials", "Auto-publishes AggregateRating schema from B5"]
+    },
+    {
+      "id": "B20",
+      "tier": "P2",
+      "title": "Pluggable chat adapter (Weave/Adit now, AI-native later)",
+      "implementation_pattern": "third_party_embed",
+      "effort_days": 3,
+      "depends_on": ["B21"],
+      "guardrails": ["R4", "R6"],
+      "acceptance_criteria": ["Adapter interface allows swapping vendor without touching UI", "Widget sandboxed per R6", "Blocked without a BAA-registry entry per B21"]
+    }
+  ]
+}
