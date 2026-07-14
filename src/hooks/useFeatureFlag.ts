@@ -1,17 +1,23 @@
-import { useTenantConfig } from '../context/useTenant'
-import type { TenantFeatures } from '../types'
+import { useTenantConfig } from '../context/useTenant';
+import type { TenantFeatures } from '../types';
+import { resolveFlag, type ResolvableOptions } from './resolveFlag';
+
+export type { ResolvableOptions as FeatureFlagOptions };
 
 /**
  * Returns whether a specific feature flag is enabled for the current tenant.
  *
- * Defaults to `true` when:
- * - the `features` object is omitted entirely
- * - the specific flag key is omitted
+ * Existing flags (contactForm, bookingWidget, …) omit `defaultValue` and keep
+ * their historical `true` default. New Phase-4 flags pass `{ defaultValue: false }`
+ * so they are opt-in and never silently light up for an existing tenant.
  *
- * This keeps existing tenants fully functional until a flag is explicitly
- * toggled off in their config.
+ * Resolution is delegated to the pure `resolveFlag` so the fallback contract is
+ * unit-testable without a renderer (see PRE-1 / R3).
  */
-export function useFeatureFlag(flag: keyof TenantFeatures): boolean {
-  const config = useTenantConfig()
-  return config.features?.[flag] ?? true
+export function useFeatureFlag(
+  flag: keyof TenantFeatures,
+  options: ResolvableOptions = {},
+): boolean {
+  const config = useTenantConfig();
+  return resolveFlag(config.features, flag, options);
 }
