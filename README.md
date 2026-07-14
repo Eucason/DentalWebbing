@@ -339,11 +339,11 @@ The script enforces BuildPhilosophy §1 (zero hardcoding) and §4 (design isolat
 
 ### `scripts/progress-tracker.js`
 
-A mutex-locked (5 min, `.tracker.lock`) state machine over `progress.json` with a markdown mirror written to `progress.md`.
+A mutex-locked (5 min, `.tracker.lock`) state machine over `progress.json`.
 
 ```bash
 node progress-tracker.js status
 node progress-tracker.js update <TASK_ID> <pending|in_progress|complete>
 ```
 
-On `complete` it runs architectural audits (no hardcoded URLs/IPv4 beyond localhost, no inline hex in the component diff) and runs `npm run build` as a sanity check, then marks the task and regenerates `progress.md`.
+On `complete` it runs architectural audits (no hardcoded URLs/IPv4 beyond localhost, no inline hex in the component diff) and runs `npm run build` as a sanity check, then marks the task and rewrites `progress.json`.

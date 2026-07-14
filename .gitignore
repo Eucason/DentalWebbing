@@ -29,9 +29,6 @@ dist-ssr
 .env*
 !.env.example
 
-# Local progress scratch (user-specific, not part of the repo)
-progress.md
-
 # Claude Code / swarm tooling state (ephemeral, local-only)
 .claude/
 .claude-flow/

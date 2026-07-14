@@ -9,7 +9,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const JSON_PATH = path.join(__dirname, '../progress.json');
-const MD_PATH = path.join(__dirname, '../progress.md');
 const LOCK_PATH = path.join(__dirname, '../.tracker.lock');
 
 // --- 1. CONCURRENCY CONTROL ---
@@ -84,44 +83,7 @@ function runArchitecturalAudits(taskId) {
   return true;
 }
 
-// --- 3. SCANNABLE MARKDOWN EXPORT GENERATION ---
-function synchronizeMarkdown(state) {
-  let md = `# DentalWebbing - Progress\n\n`;
-  md += `**Project:** ${state.project}\n`;
-  md += `**Stack:** ${Object.entries(state.stack).map(([k, v]) => v).join(' - ')}\n\n`;
-  md += `---\n\n## Status\n`;
-  md += `**${state.status.phase}** (on branch \`${state.status.branch}\`, ${state.status.workingTree})\n\n`;
-  md += `Frontend foundations are fully in place (Phases 1-2) and the Doctors/Services/Testimonials collection layer implemented. Outstanding tasks are backend contracts.\n\n---\n\n## Up Next\n`;
-
-  state.tasks.forEach(task => {
-    const mark = task.status === 'complete' ? 'x' : task.status === 'in_progress' ? '/' : ' ';
-    md += `- [${mark}] **[${task.id}]** ${task.title}\n`;
-  });
-
-  md += `\n## Blockers / Open Questions\n`;
-  state.blockers.forEach(blocker => {
-    md += `- ${blocker}\n`;
-  });
-
-  md += `\n---\n\n## Completed Work\n\n`;
-  state.completedLog.forEach(item => {
-    md += `### ${item.scope}\n${item.summary}\n\n`;
-  });
-
-  md += `--- \n\n## Session Log\n\n`;
-  state.sessionLog.forEach(log => {
-    md += `### ${log.date} - ${log.agent}\n`;
-    log.updates.forEach(update => {
-      md += `- ${update}\n`;
-    });
-    md += `\n`;
-  });
-
-  fs.writeFileSync(MD_PATH, md, 'utf8');
-  console.log("📝 User-facing human-readable progress.md log file refreshed.");
-}
-
-// --- 4. EXECUTIVE ENTRY MATRIX ---
+// --- 3. EXECUTIVE ENTRY MATRIX ---
 const args = process.argv.slice(2);
 const command = args[0];
 
@@ -171,7 +133,6 @@ try {
         console.error(`❌ Tracking validation match failure: Milestone token [${targetId}] is absent from tracking directories.`);
       } else {
         fs.writeFileSync(JSON_PATH, JSON.stringify(state, null, 2), 'utf8');
-        synchronizeMarkdown(state);
       }
       break;
     }
