@@ -137,8 +137,46 @@ try {
       break;
     }
 
+    case 'decisions': {
+      // Repo-native decision ledger — replaces the Ruflo `memory store
+      // --namespace decisions` surface PRE-1 asked for. Each entry: the
+      // decision id (e.g. "flag-default"), the one-line decision, an optional
+      // rationale, and the timestamp recorded at write time.
+      if (!Array.isArray(state.decisions)) state.decisions = [];
+
+      const sub = args[1];
+      if (sub === 'list') {
+        console.log(JSON.stringify(state.decisions, null, 2));
+        break;
+      }
+
+      const id = args[1];
+      const decision = args[2];
+      if (!id || !decision) {
+        console.error("❌ Template:  node progress-tracker.js decisions <id> <decision...>\n           node progress-tracker.js decisions list");
+        break;
+      }
+
+      // Guard against accidental id collisions — decisions are immutable records.
+      if (state.decisions.some((d) => d.id === id)) {
+        console.error(`❌ Decision id [${id}] already exists. Decisions are append-only.`);
+        releaseLock();
+        process.exit(1);
+      }
+
+      state.decisions.push({
+        id,
+        decision,
+        rationale: args.slice(3).join(' ') || undefined,
+        ts: new Date().toISOString(),
+      });
+      fs.writeFileSync(JSON_PATH, JSON.stringify(state, null, 2), 'utf8');
+      console.log(`📝 Decision recorded: [${id}]`);
+      break;
+    }
+
     default:
-      console.log("⚙️  Usage commands list: 'status' | 'update <TASK_ID> <status>'");
+      console.log("⚙️  Usage: 'status' | 'update <TASK_ID> <status>' | 'decisions <id> <decision>' | 'decisions list'");
   }
 } finally {
   releaseLock();

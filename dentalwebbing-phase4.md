@@ -5,10 +5,9 @@ Supplements `BuildPhilosophy.md` / `Goal.md` / `progress.json`. Task detail live
 
 ## Known conflict with root CLAUDE.md
 
-- Root rule says `npm run build && npm test` after every change. **This repo has no
-  test script yet.** Until one exists, Definition of Done below replaces `npm test`
-  with `node scripts/arch-lint.js`. Don't silently skip the conflict — flag it if a
-  task needs real test coverage added.
+- Root rule says `npm run build && npm test` after every change. **This repo now has
+  a test script** (`npm test` → compiles the pure `resolveFlag` resolver and runs
+  `node --test`). Don't regress it: keep `npm test` green on every change.
 
 ## Rules
 
@@ -16,11 +15,14 @@ Supplements `BuildPhilosophy.md` / `Goal.md` / `progress.json`. Task detail live
   through `TenantContext`, ACF, or the feature/section matrix.
 - **R2 Self-hide** — new Phase-4 sections render `null` on empty data (Insurance/FAQ
   pattern), not the Doctors/Services "coming soon" pattern.
-- **R3 Flag default — BLOCKS ALL PHASE-4 FLAG WORK until resolved.**
-  `useFeatureFlag`/`useSectionVisible` are opt-out (`?? true`). New flags will default
-  `true` for existing tenants unless: (a) hooks take an explicit per-call default, or
-  (b) tenant-config always returns explicit `false` for new keys. Resolve first. Don't
-  add a flag before this lands.
+- **R3 Flag default — RESOLVED (option a).** `useFeatureFlag`/`useSectionVisible`
+  accept a per-call `{ defaultValue: false }`. Legacy flags omit it and keep their
+  historical `true` default (backwards-compatible). Every NEW Phase-4 flag **MUST**
+  pass `{ defaultValue: false }` so it stays off until a tenant opts in — the
+  `scripts/arch-lint.js` pre-flight gate rejects a bare `useFeatureFlag('newKey')`
+  unless a decision `allow-true-default:<key>` is recorded in `progress.json`.
+  Decision id `flag-default` records the resolution. Do NOT weaken the
+  `?? options.defaultValue ?? true` contract in `src/hooks/resolveFlag.ts`.
 - **R4 HIPAA non-PHI** — reuse `ContactForm.tsx`'s existing Zod/disclaimer scaffolding.
   Never add medical history, meds, SSN, subscriber ID, or chart data to any native
   form/CPT. PHI-adjacent → hand off to BAA vendor (NexHealth, Phreesia, Yapi,
@@ -39,7 +41,8 @@ Supplements `BuildPhilosophy.md` / `Goal.md` / `progress.json`. Task detail live
 ## Definition of Done (per task, overrides root `npm test` per above)
 
 ```bash
-node scripts/arch-lint.js          # exit 0
+npm test                           # resolver proof (PRE-1), exit 0; keeps R3 contract
+node scripts/arch-lint.js          # hex-literal + Phase-4 opt-in gate, exit 0
 npm run build                      # must succeed
 # confirm mocks fixture + QUERY_KEYS entry exist for new collections
 node scripts/progress-tracker.js update <TASK_ID> complete

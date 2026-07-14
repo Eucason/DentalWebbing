@@ -26,6 +26,12 @@ const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.join(__dirname, '..');
 
 const SCAN_DIRS = ['src/components', 'src/pages'];
+const TENANT_TYPES = path.join(REPO_ROOT, 'src/types/tenant.ts');
+const PROGRESS_JSON = path.join(REPO_ROOT, 'progress.json');
+// A Phase-4 flag explicitly allowed to keep its true-default despite the
+// R3 resolution. Decoded from a decision id of the form
+// `allow-true-default:<flag>`. See PRE-1 / R3.
+const ALLOW_TRUE_PREFIX = 'allow-true-default:';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 /** True when `rel` lives under one of the watched component trees. */
@@ -122,6 +128,96 @@ function scanFile(rel) {
   return offences;
 }
 
+// ── Phase-4 opt-in gate (PRE-1 / R3) ───────────────────────────────────────
+// Every NEW flag/section added by Phase 4 is off by default. A consumer must
+// either:
+//   (a) pass `{ defaultValue: false }`, or
+//   (b) carry an explicit opt-in decision (id `allow-true-default:<flag>`).
+// A bare `useFeatureFlag('somePhase4Key')` — no second arg — would silently
+// light that flag up for every existing tenant, so the pre-flight rejects it.
+
+/** Read `src/types/tenant.ts` and return the set of Phase-4 flag keys. */
+function loadPhase4Keys() {
+  let src;
+  try {
+    src = fs.readFileSync(TENANT_TYPES, 'utf8');
+  } catch {
+    return new Set();
+  }
+
+  // Keys are the optional boolean members declared after the first
+  // `── Phase-4 flags` marker comment, up to the next `}` or next top-level
+  // comment block that isn't part of the group.
+  const lines = src.split('\n');
+  const keys = new Set();
+  let inGroup = false;
+  const keyRe = /^\s+(\w+)\s*\?:\s*boolean/;
+  for (const line of lines) {
+    if (line.includes('Phase-4 flags') || line.includes('Phase-4') && line.includes('flag')) {
+      inGroup = true;
+      continue;
+    }
+    if (inGroup) {
+      if (line.trim().startsWith('}') || (line.includes('//') && !line.includes('Phase-4'))) {
+        inGroup = false;
+        continue;
+      }
+      const m = line.match(keyRe);
+      if (m) keys.add(m[1]);
+    }
+  }
+  return keys;
+}
+
+/** Decision ids that opt a specific Phase-4 key back into the true-default. */
+function loadAllowedTrueDefaults() {
+  const allowed = new Set();
+  try {
+    const data = JSON.parse(fs.readFileSync(PROGRESS_JSON, 'utf8'));
+    for (const d of data.decisions ?? []) {
+      if (typeof d.id === 'string' && d.id.startsWith(ALLOW_TRUE_PREFIX)) {
+        allowed.add(d.id.slice(ALLOW_TRUE_PREFIX.length));
+      }
+    }
+  } catch {
+    // ledger absent/unreadable → safest to allow nothing extra
+  }
+  return allowed;
+}
+
+const FLAG_CALL_RE = /(?:useFeatureFlag|useSectionVisible)\(\s*['"]([a-zA-Z0-9_]+)['"]\s*([),])/g;
+
+/**
+ * Returns offences for Phase-4 flags consumed without an explicit default or a
+ * recorded opt-in decision. A second argument (`,`) is assumed to carry the
+ * `{ defaultValue: false }` opt-in; a `)` immediately after the key is the
+ * bare/unsafe form.
+ */
+function scanPhase4(rel, phase4Keys, allowedTrue) {
+  if (phase4Keys.size === 0) return [];
+
+  const abs = path.join(REPO_ROOT, rel);
+  let text;
+  try {
+    text = fs.readFileSync(abs, 'utf8');
+  } catch {
+    return [];
+  }
+
+  const offences = [];
+  FLAG_CALL_RE.lastIndex = 0;
+  let m;
+  while ((m = FLAG_CALL_RE.exec(text)) !== null) {
+    const [, key, terminator] = m;
+    if (!phase4Keys.has(key)) continue; // a legacy key — not our concern
+    if (terminator === ',') continue; // has a options arg — assumed opt-in
+    if (allowedTrue.has(key)) continue; // recorded decision permits true
+    const lineNo = text.slice(0, m.index).split('\n').length;
+    offences.push(`  ${rel}:${lineNo}  useFeatureFlag('${key}') — missing { defaultValue: false }`);
+  }
+  return offences;
+}
+
 // ── Driver ─────────────────────────────────────────────────────────────────
 function main() {
   // Union of every path that could be inspected at commit time.
@@ -139,30 +235,43 @@ function main() {
 
   console.log(`🛡️  arch-lint: scanning ${targets.length} .tsx file(s) under ${SCAN_DIRS.join(', ')}…\n`);
 
+  const phase4Keys = loadPhase4Keys();
+  const allowedTrue = loadAllowedTrueDefaults();
+
   const allOffences = [];
   for (const rel of targets) {
-    const found = scanFile(rel);
+    const found = [...scanFile(rel), ...scanPhase4(rel, phase4Keys, allowedTrue)];
     if (found.length) allOffences.push(...found);
   }
 
   if (allOffences.length) {
     console.error('\n🛑 ARCHITECTURAL GATE REJECTION (arch-lint):');
     console.error(
-      '   Raw hex color literals were found in component/presentation .tsx',
-    );
-    console.error(
-      '   files. Per BuildPhilosophy §1/§4, visual identity must resolve via',
-    );
-    console.error(
-      '   CSS custom properties (e.g. bg-[var(--tenant-primary)]), not raw hex.',
+      '   Architectural violations found in component/presentation .tsx files:',
     );
     console.error('');
     allOffences.forEach((o) => console.error(o));
     console.error('');
+    console.error(
+      '   • Hex literals: visual identity must resolve via CSS custom',
+      '     properties (e.g. bg-[var(--tenant-primary)]), not raw hex.',
+    );
+    console.error(
+      '   • Phase-4 flags/sections (R3 / PRE-1): a bare',
+      "     useFeatureFlag('<key>') with no { defaultValue: false } would",
+      '     silently enable it for every existing tenant. Either pass the',
+      '     opt-in explicitly, OR record a decision',
+      `     \`${ALLOW_TRUE_PREFIX}<key>\` in progress.json.`,
+    );
+    console.error('');
     process.exit(1);
   }
 
-  console.log('✅ arch-lint: zero hex literals in component tree changes.');
+  console.log(
+    `✅ arch-lint: zero hex literals${
+      phase4Keys.size ? ' and no Phase-4 opt-in violations' : ''
+    } in component tree changes.`,
+  );
   process.exit(0);
 }
 

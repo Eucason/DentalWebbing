@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:build": "tsc --ignoreConfig src/hooks/resolveFlag.ts --outDir dist-test --module nodenext --moduleResolution nodenext --target es2022 --skipLibCheck",
+    "test": "npm run test:build && node --test \"scripts/**/*.test.mjs\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
