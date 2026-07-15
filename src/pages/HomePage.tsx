@@ -1,6 +1,7 @@
 import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { BeforeAfterSection } from '../components/sections/BeforeAfterSection'
+import { CaseStudiesSection } from '../components/sections/CaseStudiesSection'
 import { DoctorsSection } from '../components/sections/DoctorsSection'
 import { FinancingSection } from '../components/sections/FinancingSection'
 import { FaqAccordionSection } from '../components/sections/FaqAccordionSection'
@@ -95,6 +96,14 @@ function HomePage() {
         // FAQ accordion, groups by category when present. Self-hides when the
         // tenant has no FAQs.
         showFaq && <FaqAccordionSection />
+      }
+
+      {
+        // Smile-stories band. Opt-in via the caseStudies feature flag (R3 —
+        // defaults OFF; the section enforces its own gate, so no per-render
+        // flag check is needed here). Self-hides when the tenant has no
+        // published case studies (R2).
+        <CaseStudiesSection />
       }
     </>
   )

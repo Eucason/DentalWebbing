@@ -1,5 +1,6 @@
 import type {
   BeforeAfter,
+  CaseStudy,
   ClinicInfo,
   Doctor,
   Service,
@@ -627,6 +628,64 @@ export const MOCK_FINANCING_OPTIONS: FinancingOption[] = [
     accepted: true,
     logo: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=200',
     display_order: 4,
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock Case Studies (smile stories — minimum 3)
+// ---------------------------------------------------------------------------
+// Fixture variety is deliberate — it exercises every branch of the smile-
+// stories band in offline/dev mode:
+//   1. "Alex R."  — full before/after images, NO video_url → the standard
+//                    card layout (image pair + text, no play link).
+//   2. "Jordan K."— full before/after images AND a video_url → the play
+//                    button/link branch renders.
+//   3. "Sam T."   — NO before/after images (edge case) → the image-free
+//                    layout branch renders (placeholder tiles, text only).
+//
+// patient_name values are pseudonyms only (R7): no real names, no diagnosis
+// or procedure dates. Every field is populated here (including `doctor` as a
+// display name) because mock mode returns MOCK_CASE_STUDIES directly,
+// bypassing the endpoint mapper — it must therefore mirror exactly what
+// `fetchCaseStudies()` would produce.
+export const MOCK_CASE_STUDIES: CaseStudy[] = [
+  {
+    id: 1,
+    slug: 'smile-makeover-veneers',
+    patient_name: 'Alex R.',
+    treatment_type: 'Porcelain Veneers',
+    story_body:
+      'After years of feeling self-conscious about a gap and uneven staining, a set of porcelain veneers completely transformed my confidence. The whole process took just two visits, and the result looks completely natural.',
+    before_image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    after_image: 'https://images.unsplash.com/photo-1598256989928-f843536ece3d?w=600',
+    doctor: 'Dr. Amara Osei',
+    display_order: 1,
+  },
+  {
+    id: 2,
+    slug: 'invisalign-alignment',
+    patient_name: 'Jordan K.',
+    treatment_type: 'Invisalign',
+    story_body:
+      'I was nervous about braces as an adult, but the clear aligners were far more comfortable than I expected. A year later my smile is straighter than I ever thought possible — and the video walkthrough captured the whole journey.',
+    before_image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600',
+    after_image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    video_url: 'https://example.com/case-studies/jordan-invisalign.mp4',
+    doctor: 'Dr. Felix Kariuki',
+    display_order: 2,
+  },
+  {
+    id: 3,
+    slug: 'whitening-confidence',
+    patient_name: 'Sam T.',
+    treatment_type: 'Teeth Whitening',
+    story_body:
+      'Years of coffee and tea had taken their toll. A single in-chair whitening session lifted the staining by several shades, and I left the clinic genuinely smiling at my reflection.',
+    // Intentionally no before/after images → exercises the image-free layout.
+    before_image: '',
+    after_image: '',
+    doctor: 'Dr. Linda Mwangi',
+    display_order: 3,
   },
 ]
 

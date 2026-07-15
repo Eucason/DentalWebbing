@@ -1,6 +1,7 @@
 import type { AxiosInstance } from 'axios'
 import type {
   BeforeAfter,
+  CaseStudy,
   Doctor,
   DoctorCredential,
   Service,
@@ -542,6 +543,60 @@ export async function fetchPageBySlug(api: AxiosInstance, slug: string): Promise
     excerpt: post.excerpt?.rendered ? stripHtml(post.excerpt.rendered) : undefined,
     featuredImageUrl: extractFeaturedImageUrl(post),
   }
+}
+
+// ---------------------------------------------------------------------------
+// Case Studies (smile stories)
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches the list of patient case studies ("smile stories") from the WP
+ * REST API and maps them to the typed `CaseStudy` interface.
+ *
+ * `patient_name` is operator-edited and must be a pseudonym (R7): no real
+ * names, no diagnosis or procedure dates. `doctor` is a relationship field;
+ * the mapper resolves it to the referenced post's title (or falls back to a
+ * slug/id string) so it renders as a display name. `video_url` is optional —
+ * when the ACF field is absent or empty the mapper drops it.
+ */
+export async function fetchCaseStudies(api: AxiosInstance): Promise<CaseStudy[]> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/case-study', {
+    params: { _embed: true, per_page: 100 },
+  })
+
+  return data.map((post): CaseStudy => {
+    const rawDoctor = post.acf?.doctor
+    let doctor = ''
+    if (typeof rawDoctor === 'string') {
+      doctor = stripHtml(rawDoctor)
+    } else if (typeof rawDoctor === 'number') {
+      doctor = String(rawDoctor)
+    } else if (rawDoctor && typeof rawDoctor === 'object') {
+      const obj = rawDoctor as Record<string, unknown>
+      const title =
+        typeof obj.title === 'string'
+          ? obj.title
+          : typeof obj.post_title === 'string'
+            ? obj.post_title
+            : ''
+      doctor = title ? stripHtml(title) : typeof obj.id === 'number' ? String(obj.id) : ''
+    }
+
+    return {
+      id: post.id,
+      slug: post.slug,
+      patient_name:
+        typeof post.acf?.patient_name === 'string' ? stripHtml(post.acf.patient_name) : '',
+      treatment_type:
+        typeof post.acf?.treatment_type === 'string' ? post.acf.treatment_type : '',
+      story_body: post.content?.rendered ? stripHtml(post.content.rendered) : '',
+      before_image: typeof post.acf?.before_image === 'string' ? post.acf.before_image : '',
+      after_image: typeof post.acf?.after_image === 'string' ? post.acf.after_image : '',
+      video_url: typeof post.acf?.video_url === 'string' ? post.acf.video_url : undefined,
+      doctor,
+      display_order: typeof post.acf?.display_order === 'number' ? post.acf.display_order : 0,
+    }
+  })
 }
 
 // ---------------------------------------------------------------------------
