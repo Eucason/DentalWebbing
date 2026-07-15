@@ -23,6 +23,12 @@
   ],
   "tasks": [
     {
+      "id": "B1",
+      "category": "Phase 4 — Feature Modules",
+      "title": "before_after CPT + gallery section: native CPT mirroring useDoctors() with BeforeAfterSection gallery, filter by treatment_type, featured-pin + display_order sort, feature-flagged behind beforeAfterGallery (R3).",
+      "status": "complete"
+    },
+    {
       "id": "B2",
       "category": "Phase 4 — Feature Modules",
       "title": "Testimonial video + source fields: extend testimonials CPT with video_url, video_thumbnail, source_platform, treatment_received (ACF-only). Inline HTML5 player when video_url present; source/treatment metadata text otherwise.",

@@ -1,5 +1,6 @@
 import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
+import { BeforeAfterSection } from '../components/sections/BeforeAfterSection'
 import { DoctorsSection } from '../components/sections/DoctorsSection'
 import { FaqAccordionSection } from '../components/sections/FaqAccordionSection'
 import { HeroSection } from '../components/sections/HeroSection'
@@ -62,6 +63,14 @@ function HomePage() {
         // Accepted insurance, payment plans, and new-patient offer.
         // Self-hides when the tenant has no insurance config.
         showInsurance && <InsuranceSection />
+      }
+
+      {
+        // Before/after case gallery. Opt-in via the beforeAfterGallery feature
+        // flag (R3 — defaults OFF; the section enforces its own gate, so no
+        // per-render flag check is needed here). Self-hides when the tenant has
+        // no published cases (R2).
+        <BeforeAfterSection />
       }
 
       {
