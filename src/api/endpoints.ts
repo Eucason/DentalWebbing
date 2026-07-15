@@ -14,6 +14,7 @@ import type {
   SocialMetrics,
   InsuranceConfig,
   SpecialOffer,
+  FinancingOption,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -541,4 +542,39 @@ export async function fetchPageBySlug(api: AxiosInstance, slug: string): Promise
     excerpt: post.excerpt?.rendered ? stripHtml(post.excerpt.rendered) : undefined,
     featuredImageUrl: extractFeaturedImageUrl(post),
   }
+}
+
+// ---------------------------------------------------------------------------
+// Financing Options
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches the financing options offered (or accepted) by the clinic.
+ *
+ * Hits the `financing_option` CPT REST base and maps ACF fields into the
+ * normalised `FinancingOption` shape. `logo` resolves from the featured media
+ * via `extractFeaturedImageUrl`; `pre_qualify_url` and `monthly_payment_display`
+ * are operator-edited render-ready strings passed through as-is.
+ */
+export async function fetchFinancingOptions(api: AxiosInstance): Promise<FinancingOption[]> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/financing-option', {
+    params: { _embed: true, per_page: 100 },
+  })
+
+  return data.map((post): FinancingOption => ({
+    id: post.id,
+    slug: post.slug,
+    provider_name: typeof post.acf?.provider_name === 'string' ? stripHtml(post.acf.provider_name) : '',
+    description: post.excerpt?.rendered ? stripHtml(post.excerpt.rendered) : '',
+    is_in_house_plan: post.acf?.is_in_house_plan === true,
+    monthly_payment_display:
+      typeof post.acf?.monthly_payment_display === 'string'
+        ? stripHtml(post.acf.monthly_payment_display)
+        : '',
+    pre_qualify_url:
+      typeof post.acf?.pre_qualify_url === 'string' ? post.acf.pre_qualify_url : '',
+    accepted: post.acf?.accepted === true,
+    logo: extractFeaturedImageUrl(post) ?? '',
+    display_order: typeof post.acf?.display_order === 'number' ? post.acf.display_order : 0,
+  }))
 }
