@@ -7,6 +7,7 @@ import { HeroSection } from '../components/sections/HeroSection'
 import { InsuranceSection } from '../components/sections/InsuranceSection'
 import { ServicesSection } from '../components/sections/ServicesSection'
 import { SocialProofSection } from '../components/sections/SocialProofSection'
+import { SpecialOffersSection } from '../components/sections/SpecialOffersSection'
 import { TestimonialsSection } from '../components/sections/TestimonialsSection'
 import { useSectionVisible } from '../hooks/useSectionVisible'
 
@@ -57,6 +58,14 @@ function HomePage() {
         // Aggregate trust signals: ratings, review count, accreditations, awards.
         // Self-hides when the tenant has no social metrics.
         showSocialProof && <SocialProofSection />
+      }
+
+      {
+        // Special-offer band. Opt-in via the specialOffers feature flag (R3 —
+        // defaults OFF; the section enforces its own gate, so no per-render
+        // flag check is needed here). Self-hides when the tenant has no
+        // active, in-window offers (R2).
+        <SpecialOffersSection />
       }
 
       {

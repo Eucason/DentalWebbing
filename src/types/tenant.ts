@@ -31,6 +31,8 @@ export interface TenantFeatures {
   // ── Phase-4 flags (opt-in; consumers pass { defaultValue: false }) ──────────
   /** B1 — before_after gallery section. */
   beforeAfterGallery?: boolean
+  /** B3 — special_offer CPT + offer band section. */
+  specialOffers?: boolean
 }
 
 export interface TenantConfig {
