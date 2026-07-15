@@ -43,7 +43,7 @@ export function CookieConsentModal() {
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-[60] border-t border-[var(--tenant-border,#e2e8f0)] bg-white p-4 shadow-xl"
+      className="fixed inset-x-0 bottom-0 z-[60] border-t border-[var(--tenant-border)] bg-white p-4 shadow-xl"
       role="dialog"
       aria-label="Cookie consent"
       aria-modal={showPrefs}
@@ -60,21 +60,21 @@ export function CookieConsentModal() {
             <button
               type="button"
               onClick={acceptAll}
-              className="rounded bg-[var(--tenant-primary,#2563eb)] px-4 py-2 text-sm font-medium text-white"
+              className="rounded bg-[var(--tenant-primary)] px-4 py-2 text-sm font-medium text-white"
             >
               Accept all
             </button>
             <button
               type="button"
               onClick={rejectAll}
-              className="rounded border border-[var(--tenant-border,#e2e8f0)] px-4 py-2 text-sm font-medium"
+              className="rounded border border-[var(--tenant-border)] px-4 py-2 text-sm font-medium"
             >
               Reject all
             </button>
             <button
               type="button"
               onClick={() => setShowPrefs(true)}
-              className="rounded border border-[var(--tenant-border,#e2e8f0)] px-4 py-2 text-sm font-medium underline"
+              className="rounded border border-[var(--tenant-border)] px-4 py-2 text-sm font-medium underline"
             >
               Preferences
             </button>
@@ -112,14 +112,14 @@ export function CookieConsentModal() {
             <button
               type="button"
               onClick={() => setShowPrefs(false)}
-              className="rounded bg-[var(--tenant-primary,#2563eb)] px-4 py-2 text-sm font-medium text-white"
+              className="rounded bg-[var(--tenant-primary)] px-4 py-2 text-sm font-medium text-white"
             >
               Save preferences
             </button>
             <button
               type="button"
               onClick={() => setShowPrefs(false)}
-              className="rounded border border-[var(--tenant-border,#e2e8f0)] px-4 py-2 text-sm font-medium"
+              className="rounded border border-[var(--tenant-border)] px-4 py-2 text-sm font-medium"
             >
               Back
             </button>
@@ -144,7 +144,7 @@ function ConsentToggle({
   onChange: (val: boolean) => void
 }) {
   return (
-    <div className="mt-4 flex items-start justify-between gap-4 border-t border-[var(--tenant-border,#e2e8f0)] pt-4">
+    <div className="mt-4 flex items-start justify-between gap-4 border-t border-[var(--tenant-border)] pt-4">
       <div>
         <p className="text-sm font-medium">{label}</p>
         <p className="text-xs text-slate-500">{description}</p>
@@ -160,8 +160,8 @@ function ConsentToggle({
         }`}
         style={{
           backgroundColor: checked
-            ? 'var(--tenant-primary, #2563eb)'
-            : 'var(--tenant-border, #cbd5e1)',
+            ? 'var(--tenant-primary)'
+            : 'var(--tenant-border)',
         }}
       >
         <span
