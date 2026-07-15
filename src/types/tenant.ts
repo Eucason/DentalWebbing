@@ -47,6 +47,8 @@ export interface TenantFeatures {
   scheduling?: boolean
   /** B13 — multi-channel mobile sticky CTA bar. */
   stickyCta?: boolean
+  /** B14 — full CMP cookie consent modal (banner + granular preferences). */
+  cookieConsent?: boolean
 }
 
 export interface TenantConfig {

@@ -48,6 +48,8 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
     scheduling: true,
     // B13 — sticky CTA bar flag; opt-in (R3 — defaults OFF absent this key).
     stickyCta: true,
+    // B14 — full CMP cookie consent modal flag; opt-in (R3 — defaults OFF).
+    cookieConsent: true,
   },
   // ── B21 — BAA registry (per-tenant vendor BAA status) ─────────────────────
   // A signed BAA is REQUIRED before a vendor can handle PHI-adjacent data

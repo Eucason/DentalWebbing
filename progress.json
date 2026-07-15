@@ -110,7 +110,7 @@
       "id": "B14",
       "category": "Phase 4 — Feature Modules",
       "title": "Full CMP cookie consent: granular reject/accept controls, branded via tenant CSS vars, blocks trackers pre-consent.",
-      "status": "pending"
+      "status": "complete"
     },
     {
       "id": "T_301",
