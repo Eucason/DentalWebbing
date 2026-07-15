@@ -33,6 +33,8 @@ export interface TenantFeatures {
   beforeAfterGallery?: boolean
   /** B3 — special_offer CPT + offer band section. */
   specialOffers?: boolean
+  /** B4 — service pricing fields + before/after slider. */
+  servicePricing?: boolean
 }
 
 export interface TenantConfig {
