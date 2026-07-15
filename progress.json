@@ -35,6 +35,12 @@
       "status": "complete"
     },
     {
+      "id": "B6",
+      "category": "Phase 4 — Feature Modules",
+      "title": "Location-aware appointment requests + non-PHI intake handoff: extend ContactForm with optional location_id / preferred_time / reason_for_visit fields and a new contact-lease REST endpoint. Zero PHI (R4); mock submit path logs + resolves.",
+      "status": "complete"
+    },
+    {
       "id": "T_301",
       "category": "Up Next",
       "title": "Commit and review feat/testimonials-collection; wire a dedicated TestimonialsPage if a full-list route is desired.",

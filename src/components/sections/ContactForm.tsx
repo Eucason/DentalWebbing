@@ -3,9 +3,9 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { createApiClient } from '../../api/client'
-import { submitContactForm } from '../../api/endpoints'
+import { submitContactLease } from '../../api/endpoints'
 import { useTenantConfig } from '../../context/useTenant'
-import { mockSubmitContactForm } from '../../mocks/data'
+import { mockSubmitContactLease } from '../../mocks/data'
 import { Button } from '../ui/Button'
 
 // ---------------------------------------------------------------------------
@@ -34,6 +34,12 @@ const contactSchema = z.object({
     .min(1, 'Message is required.')
     .min(10, 'Message must be at least 10 characters.')
     .max(1000, 'Message must be at most 1000 characters.'),
+  // B6 — location-aware appointment request fields (all optional, non-PHI).
+  // `location_id` is only validated as a string; it references the future
+  // location CPT and carries no further constraints.
+  location_id: z.string().optional(),
+  preferred_time: z.string().optional(),
+  reason_for_visit: z.string().optional(),
 })
 
 type ContactFormValues = z.infer<typeof contactSchema>
@@ -54,15 +60,23 @@ export function ContactForm() {
 
   const mutation = useMutation<{ success: boolean }, Error, ContactFormValues>({
     mutationFn: (payload) => {
-      const safePayload = {
+      // Never forward PHI downstream — the non-PHI intake fields are
+      // location_id / preferred_time / reason_for_visit only. Medical history,
+      // medications, SSN, subscriber ID, and chart data are excluded by
+      // construction (see tasks/b6-task.md, guardrail R4).
+      const safePayload: ContactFormValues = {
         name: payload.name,
         email: payload.email,
         phone: payload.phone,
         message: payload.message,
+        location_id: payload.location_id,
+        preferred_time: payload.preferred_time,
+        reason_for_visit: payload.reason_for_visit,
       }
-      return useMocks
-        ? mockSubmitContactForm(safePayload)
-        : submitContactForm(createApiClient(tenantConfig), safePayload)
+      if (useMocks) {
+        return mockSubmitContactLease(safePayload)
+      }
+      return submitContactLease(createApiClient(tenantConfig), safePayload)
     },
   })
 
@@ -77,6 +91,9 @@ export function ContactForm() {
       email: '',
       phone: '',
       message: '',
+      location_id: '',
+      preferred_time: '',
+      reason_for_visit: '',
     },
   })
 
@@ -220,6 +237,72 @@ export function ContactForm() {
           {errors.message && (
             <p id="contact-message-error" className="mt-1 text-xs text-red-600" role="alert">
               {errors.message.message}
+            </p>
+          )}
+        </div>
+
+        {/* Location (optional) — relevant once the location CPT exists */}
+        <div>
+          <label htmlFor="contact-location" className="block text-sm font-medium text-slate-700">
+            Preferred Location <span className="text-slate-400 text-xs">(optional)</span>
+          </label>
+          <input
+            id="contact-location"
+            type="text"
+            placeholder="e.g. Downtown clinic"
+            disabled={formDisabled}
+            aria-invalid={!!errors.location_id}
+            aria-describedby={errors.location_id ? 'contact-location-error' : undefined}
+            className={inputClasses}
+            {...register('location_id')}
+          />
+          {errors.location_id && (
+            <p id="contact-location-error" className="mt-1 text-xs text-red-600" role="alert">
+              {errors.location_id.message}
+            </p>
+          )}
+        </div>
+
+        {/* Preferred Time (optional) */}
+        <div>
+          <label htmlFor="contact-preferred-time" className="block text-sm font-medium text-slate-700">
+            Preferred Time <span className="text-slate-400 text-xs">(optional)</span>
+          </label>
+          <input
+            id="contact-preferred-time"
+            type="text"
+            placeholder="morning, afternoon, or a specific time"
+            disabled={formDisabled}
+            aria-invalid={!!errors.preferred_time}
+            aria-describedby={errors.preferred_time ? 'contact-preferred-time-error' : undefined}
+            className={inputClasses}
+            {...register('preferred_time')}
+          />
+          {errors.preferred_time && (
+            <p id="contact-preferred-time-error" className="mt-1 text-xs text-red-600" role="alert">
+              {errors.preferred_time.message}
+            </p>
+          )}
+        </div>
+
+        {/* Reason for Visit (optional, non-PHI) */}
+        <div>
+          <label htmlFor="contact-reason" className="block text-sm font-medium text-slate-700">
+            Reason for Visit <span className="text-slate-400 text-xs">(optional)</span>
+          </label>
+          <textarea
+            id="contact-reason"
+            rows={3}
+            placeholder="Briefly describe what you'd like help with"
+            disabled={formDisabled}
+            aria-invalid={!!errors.reason_for_visit}
+            aria-describedby={errors.reason_for_visit ? 'contact-reason-error' : undefined}
+            className={`${inputClasses} resize-y`}
+            {...register('reason_for_visit')}
+          />
+          {errors.reason_for_visit && (
+            <p id="contact-reason-error" className="mt-1 text-xs text-red-600" role="alert">
+              {errors.reason_for_visit.message}
             </p>
           )}
         </div>
