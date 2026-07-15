@@ -166,6 +166,15 @@ export async function fetchTestimonials(api: AxiosInstance): Promise<Testimonial
       rating: typeof post.acf?.rating === 'number' ? post.acf.rating : undefined,
       location: typeof post.acf?.location === 'string' ? post.acf.location : undefined,
       imageUrl: extractFeaturedImageUrl(post),
+      video_url: typeof post.acf?.video_url === 'string' ? post.acf.video_url : undefined,
+      video_thumbnail:
+        typeof post.acf?.video_thumbnail === 'string' ? post.acf.video_thumbnail : undefined,
+      source_platform:
+        typeof post.acf?.source_platform === 'string' ? post.acf.source_platform : undefined,
+      treatment_received:
+        typeof post.acf?.treatment_received === 'string'
+          ? post.acf.treatment_received
+          : undefined,
     })
   )
 }

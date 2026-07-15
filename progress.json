@@ -23,6 +23,12 @@
   ],
   "tasks": [
     {
+      "id": "B2",
+      "category": "Phase 4 — Feature Modules",
+      "title": "Testimonial video + source fields: extend testimonials CPT with video_url, video_thumbnail, source_platform, treatment_received (ACF-only). Inline HTML5 player when video_url present; source/treatment metadata text otherwise.",
+      "status": "complete"
+    },
+    {
       "id": "T_301",
       "category": "Up Next",
       "title": "Commit and review feat/testimonials-collection; wire a dedicated TestimonialsPage if a full-list route is desired.",

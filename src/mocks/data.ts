@@ -201,8 +201,11 @@ export const MOCK_SERVICES: Service[] = [
 // ---------------------------------------------------------------------------
 // Mock Testimonials
 // ---------------------------------------------------------------------------
-// Optional fields (rating, location, imageUrl) are varied across entries so the
-// component's conditional rendering is exercised in offline/dev mode.
+// Optional fields (rating, location, imageUrl, video_url, video_thumbnail,
+// source_platform, treatment_received) are varied across entries so the
+// component's conditional rendering is exercised in offline/dev mode. Entry 3
+// is a video testimonial — it is the only one with a video_url, so the
+// inline-player branch gets exercised in dev/mock mode.
 export const MOCK_TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
@@ -212,6 +215,8 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
     rating: 5,
     location: 'Spring Valley, NJ',
     imageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
+    source_platform: 'Google',
+    treatment_received: 'Preventive Care',
   },
   {
     id: 2,
@@ -220,6 +225,8 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
       'Got same-day emergency care when I cracked a molar on a Friday evening. They stayed late, fixed it perfectly, and followed up the next morning. That level of dedication is rare.',
     rating: 5,
     location: 'Nanuet, NJ',
+    source_platform: 'Trustpilot',
+    treatment_received: 'Emergency Repair',
   },
   {
     id: 3,
@@ -227,6 +234,10 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
     quote:
       'The Invisalign experience was seamless from the 3D scan to the final retainer. My confidence has never been higher, and the results came in under the estimated timeline.',
     rating: 4,
+    video_url: 'https://example.com/testimonials/priya-invisalign.mp4',
+    video_thumbnail: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    source_platform: 'Google',
+    treatment_received: 'Invisalign',
   },
   {
     id: 4,
@@ -235,6 +246,7 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
       'Teeth whitening results were stunning. In one session my smile went from years of coffee staining to genuinely bright. People keep asking what I did differently.',
     rating: 5,
     location: 'Monsey, NY',
+    treatment_received: 'Teeth Whitening',
   },
   {
     id: 5,
@@ -242,6 +254,7 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
     quote:
       'Root canal sounds scary but they made it completely painless. The numbing was perfect, the procedure was quick, and I was back at work the same afternoon. Truly remarkable.',
     rating: 5,
+    source_platform: 'Trustpilot',
   },
   {
     id: 6,
@@ -250,6 +263,8 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
       'My kids actually look forward to their cleanings now. The hygienists are patient and make it educational. Finding a dentist the whole family loves is rare — we found ours.',
     rating: 5,
     location: 'Pearl River, NY',
+    source_platform: 'Google',
+    treatment_received: 'Paediatric Hygiene',
   },
 ]
 
