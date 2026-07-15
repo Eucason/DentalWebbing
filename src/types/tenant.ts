@@ -37,6 +37,8 @@ export interface TenantFeatures {
   servicePricing?: boolean
   /** B7 — doctor credentials repeater + details drawer. */
   teamCredentials?: boolean
+  /** B8 — financing_option CPT + financing band section. */
+  financing?: boolean
 }
 
 export interface TenantConfig {

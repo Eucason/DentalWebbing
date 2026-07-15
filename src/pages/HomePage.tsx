@@ -2,6 +2,7 @@ import { SEO } from '../components/SEO'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { BeforeAfterSection } from '../components/sections/BeforeAfterSection'
 import { DoctorsSection } from '../components/sections/DoctorsSection'
+import { FinancingSection } from '../components/sections/FinancingSection'
 import { FaqAccordionSection } from '../components/sections/FaqAccordionSection'
 import { HeroSection } from '../components/sections/HeroSection'
 import { InsuranceSection } from '../components/sections/InsuranceSection'
@@ -72,6 +73,14 @@ function HomePage() {
         // Accepted insurance, payment plans, and new-patient offer.
         // Self-hides when the tenant has no insurance config.
         showInsurance && <InsuranceSection />
+      }
+
+      {
+        // Financing band. Opt-in via the financing feature flag (R3 — defaults
+        // OFF; the section enforces its own gate, so no per-render flag check
+        // is needed here). Self-hides when the tenant has no accepted options
+        // (R2).
+        <FinancingSection />
       }
 
       {

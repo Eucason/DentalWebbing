@@ -10,6 +10,7 @@ import type {
   WpPage,
   Faq,
   SpecialOffer,
+  FinancingOption,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -553,6 +554,79 @@ export const MOCK_PAGES: WpPage[] = [
         <li>Flexible payment options</li>
       </ul>
     `,
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock Financing Options (minimum 3)
+// ---------------------------------------------------------------------------
+// Fixture variety is deliberate — it exercises every branch of the financing
+// band in offline/dev mode:
+//   1. Apex In-House Plan  — is_in_house_plan=true → distinct in-house styling;
+//                            no pre_qualify_url (clinic's own plan, so the CTA
+//                            branch is NOT rendered for this card).
+//   2. BrightPay Finance   — third-party, accepted, HAS a pre_qualify_url → the
+//                            "Check eligibility" CTA renders.
+//   3. ClearDent Credit    — third-party, accepted, no pre_qualify_url → proves
+//                            the card renders correctly without a CTA.
+//   4. MedSplit Loans      — third-party, accepted → additional third-party
+//                            entry so the mixed-band layout is exercised.
+//
+// Every field is populated here (including `accepted`) because mock mode returns
+// MOCK_FINANCING_OPTIONS directly, bypassing the endpoint mapper — it must
+// therefore mirror exactly what `fetchFinancingOptions()` would produce.
+export const MOCK_FINANCING_OPTIONS: FinancingOption[] = [
+  {
+    id: 1,
+    slug: 'apex-in-house-plan',
+    provider_name: 'Apex In-House Plan',
+    description:
+      'Spread the cost over 6, 12 or 24 monthly payments with zero interest on our own flexible plan.',
+    is_in_house_plan: true,
+    monthly_payment_display: 'From £49/mo',
+    pre_qualify_url: '',
+    accepted: true,
+    logo: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200',
+    display_order: 1,
+  },
+  {
+    id: 2,
+    slug: 'brightpay-finance',
+    provider_name: 'BrightPay Finance',
+    description:
+      'Affordable monthly payment plans for dental and specialist treatment, subject to status.',
+    is_in_house_plan: false,
+    monthly_payment_display: 'From £35/mo',
+    pre_qualify_url: 'https://brightpay.example.com/pre-qualify',
+    accepted: true,
+    logo: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=200',
+    display_order: 2,
+  },
+  {
+    id: 3,
+    slug: 'cleardent-credit',
+    provider_name: 'ClearDent Credit',
+    description:
+      'Low-rate credit for higher-value procedures with quick online decisions and no upfront fees.',
+    is_in_house_plan: false,
+    monthly_payment_display: 'From £60/mo',
+    pre_qualify_url: '',
+    accepted: true,
+    logo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=200',
+    display_order: 3,
+  },
+  {
+    id: 4,
+    slug: 'medsplit-loans',
+    provider_name: 'MedSplit Loans',
+    description:
+      'Medical financing designed for dental care — flexible terms and repayments tailored to you.',
+    is_in_house_plan: false,
+    monthly_payment_display: 'From £42/mo',
+    pre_qualify_url: 'https://medsplit.example.com/apply',
+    accepted: true,
+    logo: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=200',
+    display_order: 4,
   },
 ]
 

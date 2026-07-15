@@ -17,5 +17,6 @@ export const QUERY_KEYS = Object.freeze({
   testimonials: (tenantId: string) => ['testimonials', tenantId] as const,
   specialOffers: (tenantId: string) => ['specialOffers', tenantId] as const,
   faqs: (tenantId: string) => ['faqs', tenantId] as const,
+  financingOptions: (tenantId: string) => ['financingOptions', tenantId] as const,
   page: (tenantId: string, slug: string) => ['page', tenantId, slug] as const,
 })
