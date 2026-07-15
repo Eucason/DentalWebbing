@@ -46,6 +46,8 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
     contactForm: true,
     teamCredentials: true,
     scheduling: true,
+    // B13 — sticky CTA bar flag; opt-in (R3 — defaults OFF absent this key).
+    stickyCta: true,
   },
   // ── B21 — BAA registry (per-tenant vendor BAA status) ─────────────────────
   // A signed BAA is REQUIRED before a vendor can handle PHI-adjacent data
@@ -75,6 +77,14 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
     // to the browser (R4). This fixture value is a placeholder reference.
     metaCapiAccessToken: 'REDACTED-SERVER-SIDE',
     callrailDniId: '0000000000',
+  },
+  // ── B13 — multi-channel mobile sticky CTA bar config ─────────────────────
+  // The set of fixed-bottom tabs is driven entirely by `channels` (R1 — never
+  // hardcoded in the component). The four channels mirror the reference
+  // pattern (Dallas Cosmetic Dental: Phone / SMS / Email / Callback). An
+  // empty/absent `channels` array makes the bar self-hide (R2).
+  stickyCta: {
+    channels: ['phone', 'sms', 'email', 'callback'],
   },
 }
 
