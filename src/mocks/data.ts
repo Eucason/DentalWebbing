@@ -47,6 +47,21 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
     teamCredentials: true,
     scheduling: true,
   },
+  // ── B21 — BAA registry (per-tenant vendor BAA status) ─────────────────────
+  // A signed BAA is REQUIRED before a vendor can handle PHI-adjacent data
+  // (R4) or inject a script/embed into the page (R6). Fixture variety:
+  //   nexhealth-scheduling → has BAA (cleared for scheduling embed / reads)
+  //   brightpay-finance   → NO BAA  (blocked from contact-lease PHI hand-off)
+  baa_registry: {
+    'nexhealth-scheduling': {
+      hasBaa: true,
+      vendorName: 'NexHealth Scheduling',
+    },
+    'brightpay-finance': {
+      hasBaa: false,
+      vendorName: 'BrightPay Finance',
+    },
+  },
 }
 
 // ---------------------------------------------------------------------------
