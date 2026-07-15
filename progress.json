@@ -59,6 +59,12 @@
       "status": "complete"
     },
     {
+      "id": "B7",
+      "category": "Phase 4 — Feature Modules",
+      "title": "Doctor credentials repeater + drawer: extend doctors CPT with credentials repeater (credential_title, credential_type, institution, year), years_in_practice, languages_spoken, personal_bio_video_url, fun_fact (ACF-only). Mapper normalises legacy qualifications[] and new credentials[] into one chip list. Credential chip subset + details drawer in DoctorsSection, gated behind teamCredentials flag (R3). Drawer self-hides with zero credentials (R2).",
+      "status": "complete"
+    },
+    {
       "id": "T_301",
       "category": "Up Next",
       "title": "Commit and review feat/testimonials-collection; wire a dedicated TestimonialsPage if a full-list route is desired.",
