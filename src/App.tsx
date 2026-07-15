@@ -1,10 +1,35 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { AccessibilityProvider } from './context/AccessibilitySuiteContext'
 import { BaaRegistryProvider } from './context/BaaRegistry'
 import { RouteLoadingFallback } from './components/layout/RouteLoadingFallback'
-import { TenantProvider } from './context/TenantContext'
+import { TenantProvider, useTenantConfig } from './context/TenantContext'
+import { CookieBanner } from './components/consent/CookieBanner'
+import { initAnalytics } from './utils/analytics'
 import { router } from './router'
+
+// ---------------------------------------------------------------------------
+// Analytics initialiser — runs after the tenant config is resolved.
+// ---------------------------------------------------------------------------
+// `initAnalytics` is internally consent-gated and PHI-route-excluded (R5):
+// it queues the config and only activates scripts / fires events once the
+// user has granted consent off a non-excluded route. Calling it here is
+// therefore safe even before the banner is answered — the analytic layer
+// stays dormant until consent flips to granted (R5). We wait for the tenant
+// config to resolve first so we have the tenant's tracking IDs in hand.
+//
+// The CookieBanner sits beside the router so it is visible on every route.
+function AnalyticsBootstrap() {
+  const config = useTenantConfig()
+
+  useEffect(() => {
+    if (config.analytics) {
+      initAnalytics(config.analytics)
+    }
+  }, [config])
+
+  return <CookieBanner />
+}
 
 function App() {
   // AccessibilityProvider sits INSIDE TenantProvider (it reads useTenantConfig
@@ -18,6 +43,7 @@ function App() {
     <TenantProvider>
       <BaaRegistryProvider>
         <AccessibilityProvider>
+          <AnalyticsBootstrap />
           <Suspense fallback={<RouteLoadingFallback />}>
             <RouterProvider router={router} />
           </Suspense>

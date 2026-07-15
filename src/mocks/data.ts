@@ -62,6 +62,20 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
       vendorName: 'BrightPay Finance',
     },
   },
+  // ── B12 — analytics integration config (GTM + GA4 + Meta CAPI + CallRail DNI)
+  // Placeholder IDs — real deployments populate these per tenant. Tracking is
+  // consent-gated and PHI-route-excluded by the analytics layer (R5); these
+  // values are never hardcoded in component code (R1).
+  analytics: {
+    gtmId: 'GTM-XXXXXXX',
+    ga4Id: 'G-XXXXXXXXXX',
+    metaCapiPixelId: '000000000000000',
+    // NOTE: in production the real Meta CAPI access token lives server-side
+    // only. The client posts to /api/capi-proxy; the token is never shipped
+    // to the browser (R4). This fixture value is a placeholder reference.
+    metaCapiAccessToken: 'REDACTED-SERVER-SIDE',
+    callrailDniId: '0000000000',
+  },
 }
 
 // ---------------------------------------------------------------------------

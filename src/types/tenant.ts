@@ -103,4 +103,18 @@ export interface TenantConfig {
    * vendors configured (backwards-compatible).
    */
   baa_registry?: Record<string, { hasBaa: boolean; vendorName: string }>
+
+  /**
+   * Per-tenant analytics integration config (GTM + GA4 + Meta CAPI + CallRail DNI).
+   *
+   * All tracking IDs are resolved from this object — never hardcoded (R1).
+   * The analytics layer is consent-gated and PHI-route-excluded (R5): even
+   * when this field is populated, NO tracking fires until the user grants
+   * consent AND the current route is not a PHI-adjacent excluded route
+   * (/contact, /health-form). See src/utils/analytics.ts.
+   *
+   * Optional — tenants without an analytics block simply get no tracking
+   * at all (backwards-compatible).
+   */
+  analytics?: import('./analytics').AnalyticsConfig
 }

@@ -1,3 +1,4 @@
+export * from './analytics'
 export * from './tenant'
 export * from './beforeAfter'
 export * from './caseStudy'
