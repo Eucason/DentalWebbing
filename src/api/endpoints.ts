@@ -179,6 +179,26 @@ export async function fetchServices(api: AxiosInstance): Promise<Service[]> {
       description: stripHtml(post.content.rendered),
       iconUrl: typeof post.acf?.iconUrl === 'string' ? post.acf.iconUrl : undefined,
       imageUrl: extractFeaturedImageUrl(post),
+      starting_price:
+        typeof post.acf?.starting_price === 'number' ? post.acf.starting_price : null,
+      price_range_max:
+        typeof post.acf?.price_range_max === 'number' ? post.acf.price_range_max : null,
+      price_suffix:
+        typeof post.acf?.price_suffix === 'string' ? post.acf.price_suffix : undefined,
+      is_price_upon_request: post.acf?.is_price_upon_request === true,
+      price_fine_print:
+        typeof post.acf?.price_fine_print === 'string' ? post.acf.price_fine_print : undefined,
+      financing_note:
+        typeof post.acf?.financing_note === 'string' ? post.acf.financing_note : undefined,
+      procedure_time:
+        typeof post.acf?.procedure_time === 'string' ? post.acf.procedure_time : undefined,
+      recovery_time:
+        typeof post.acf?.recovery_time === 'string' ? post.acf.recovery_time : undefined,
+      gallery: Array.isArray(post.acf?.gallery)
+        ? (post.acf.gallery.filter((x) => typeof x === 'string') as string[])
+        : undefined,
+      icon_override:
+        typeof post.acf?.icon_override === 'string' ? post.acf.icon_override : undefined,
     })
   )
 }

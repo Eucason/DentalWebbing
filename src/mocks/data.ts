@@ -205,6 +205,14 @@ export const MOCK_BEFORE_AFTER: BeforeAfter[] = [
 // ---------------------------------------------------------------------------
 // Mock Services (minimum 6)
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Mock Services (minimum 6)
+// ---------------------------------------------------------------------------
+// Pricing + metadata fields are intentionally varied across entries so the
+// conditional rendering in ServicesSection has something to exercise:
+//   - teeth-whitening / root-canal / preventive-care → numeric price band
+//   - dental-implants → price band + financing_note + gallery
+//   - orthodontics / dental-veneers → is_price_upon_request (band hidden)
 export const MOCK_SERVICES: Service[] = [
   {
     id: 1,
@@ -214,6 +222,13 @@ export const MOCK_SERVICES: Service[] = [
       'Professional in-chair and take-home whitening treatments that safely lighten enamel staining by up to 8 shades, leaving you with a brilliantly bright smile.',
     iconUrl: '/icons/whitening.svg',
     imageUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    starting_price: 250,
+    price_range_max: 600,
+    price_suffix: 'per arch',
+    is_price_upon_request: false,
+    price_fine_print: 'Results vary. Includes in-chair session.',
+    procedure_time: '60 min',
+    recovery_time: 'None',
   },
   {
     id: 2,
@@ -223,6 +238,18 @@ export const MOCK_SERVICES: Service[] = [
       'Permanent, natural-looking tooth replacements anchored directly into the jawbone. Implants restore full chewing function and prevent bone loss long-term.',
     iconUrl: '/icons/implant.svg',
     imageUrl: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600',
+    starting_price: 2500,
+    price_range_max: 4500,
+    price_suffix: 'per tooth',
+    is_price_upon_request: false,
+    price_fine_print: 'Includes implant, abutment and crown.',
+    financing_note: '0% financing available over 12 months.',
+    procedure_time: '3–6 months',
+    recovery_time: '1–2 weeks',
+    gallery: [
+      'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800',
+      'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800',
+    ],
   },
   {
     id: 3,
@@ -232,6 +259,9 @@ export const MOCK_SERVICES: Service[] = [
       'From traditional metal braces to virtually invisible clear aligners, our orthodontic plans are tailored to achieve precise, lasting alignment for teens and adults alike.',
     iconUrl: '/icons/braces.svg',
     imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600',
+    is_price_upon_request: true,
+    procedure_time: '12–24 months',
+    recovery_time: 'Ongoing',
   },
   {
     id: 4,
@@ -241,6 +271,13 @@ export const MOCK_SERVICES: Service[] = [
       'Modern endodontic therapy that saves severely infected teeth, eliminating pain and preserving your natural tooth structure using precision rotary instruments.',
     iconUrl: '/icons/root-canal.svg',
     imageUrl: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=600',
+    starting_price: 700,
+    price_range_max: 1200,
+    price_suffix: 'per tooth',
+    is_price_upon_request: false,
+    price_fine_print: 'Final cost depends on the number of canals.',
+    procedure_time: '90 min',
+    recovery_time: '2–3 days',
   },
   {
     id: 5,
@@ -250,6 +287,13 @@ export const MOCK_SERVICES: Service[] = [
       'Ultra-thin porcelain shells bonded to the front surface of teeth to correct discolouration, chips, gaps, and minor misalignment — a complete smile makeover in two visits.',
     iconUrl: '/icons/veneers.svg',
     imageUrl: 'https://images.unsplash.com/photo-1598256989928-f843536ece3d?w=600',
+    is_price_upon_request: true,
+    procedure_time: '2 visits',
+    recovery_time: '1 week',
+    gallery: [
+      'https://images.unsplash.com/photo-1598256989928-f843536ece3d?w=800',
+      'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800',
+    ],
   },
   {
     id: 6,
@@ -259,6 +303,13 @@ export const MOCK_SERVICES: Service[] = [
       'Regular scale-and-polish, fluoride treatments, fissure sealants, and personalised oral hygiene coaching keep decay and gum disease at bay — and reduce long-term treatment costs.',
     iconUrl: '/icons/hygiene.svg',
     imageUrl: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=600',
+    starting_price: 120,
+    price_range_max: 250,
+    price_suffix: 'per visit',
+    is_price_upon_request: false,
+    price_fine_print: 'Includes scale, polish and check-up.',
+    procedure_time: '45 min',
+    recovery_time: 'None',
   },
 ]
 

@@ -42,6 +42,14 @@ test('legacy flag with explicit key=true wins over absent', () => {
   assert.equal(resolveFlag({ liveChat: true }, 'liveChat'), true);
 });
 
+test('PRE-1: B4 servicePricing flag defaults OFF when key absent (Phase-4)', () => {
+  assert.equal(resolveFlag(legacyFeatures, 'servicePricing', { defaultValue: false }), false);
+});
+
+test('PRE-1: B4 servicePricing explicit true opt-in is honored', () => {
+  assert.equal(resolveFlag({ servicePricing: true }, 'servicePricing', { defaultValue: false }), true);
+});
+
 test('missing section defaults OFF when defaultValue:false (Phase-4)', () => {
   assert.equal(resolveSection(legacySections, 'beforeAfterGallery', { defaultValue: false }), false);
 });

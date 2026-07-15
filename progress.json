@@ -53,6 +53,12 @@
       "status": "complete"
     },
     {
+      "id": "B4",
+      "category": "Phase 4 — Feature Modules",
+      "title": "Service pricing fields + before/after slider: extend services CPT with pricing fields (starting_price, price_range_max, price_suffix, is_price_upon_request, price_fine_print, financing_note, procedure_time, recovery_time, gallery, icon_override — ACF-only). Per-service pricing band in ServicesSection hidden behind servicePricing flag (R3) and suppressed when is_price_upon_request (R2). New accessible BeforeAfterSlider (role=slider, ARIA vals, keyboard + touch, prefers-reduced-motion, tenant CSS vars only).",
+      "status": "complete"
+    },
+    {
       "id": "T_301",
       "category": "Up Next",
       "title": "Commit and review feat/testimonials-collection; wire a dedicated TestimonialsPage if a full-list route is desired.",

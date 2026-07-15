@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useServices } from '../../hooks/useServices'
+import { useFeatureFlag } from '../../hooks/useFeatureFlag'
 import { Card } from '../ui/Card'
 import { ServicesSkeleton } from '../ui/Skeleton'
+import { BeforeAfterSlider } from '../ui/BeforeAfterSlider'
+import type { Service } from '../../types'
 
 // ---------------------------------------------------------------------------
 // ServicesSection
@@ -25,6 +28,12 @@ interface ServicesSectionProps {
 
 export function ServicesSection({ limit }: ServicesSectionProps) {
   const { data, isLoading, isError } = useServices()
+
+  // ── Feature-flag gate (R3: opt-in Phase-4 flag, defaults OFF) ────────────
+  // Only the *new pricing display* is gated here — the section itself keeps
+  // rendering name/description so existing tenants are unaffected when the
+  // flag is off.
+  const pricingEnabled = useFeatureFlag('servicePricing', { defaultValue: false })
 
   // ── Loading ──────────────────────────────────────────────────────────────
   if (isLoading) {
@@ -118,6 +127,23 @@ export function ServicesSection({ limit }: ServicesSectionProps) {
 
                 <p className="text-sm leading-relaxed text-slate-600">{service.description}</p>
 
+                {/*
+                  ── Before / after clinical slider (B4, gated by R3) ───────
+                  Shown when the operator has uploaded a gallery of at least
+                  two images for this service. The first image is treated as
+                  the "before" and the second as the "after".
+                */}
+                {pricingEnabled && (service.gallery?.length ?? 0) >= 2 ? (
+                  <BeforeAfterSlider
+                    beforeImage={service.gallery![0]}
+                    afterImage={service.gallery![1]}
+                    alt={service.name}
+                  />
+                ) : null}
+
+                {/* ── Pricing + procedure metadata (B4, gated by R3) ──────── */}
+                {pricingEnabled && <ServicePricing service={service} />}
+
                 {/* View-service link → /services#<slug> */}
                 <div className="mt-auto pt-4">
                   <Link
@@ -172,4 +198,89 @@ function ServiceDefaultIcon({ className = '', label }: { className?: string; lab
       />
     </svg>
   )
+}
+
+// ---------------------------------------------------------------------------
+// ServicePricing — price band + procedure metadata for a single service
+// ---------------------------------------------------------------------------
+// Rendering rules (per B4 / R2):
+//   is_price_upon_request  → hide the numeric band, show "Price upon request"
+//   otherwise               → show "starting_price–price_range_max" + suffix
+//   price_fine_print        → small note beneath the band (always, when present)
+//   financing_note          → shown when present
+//   procedure_time / recovery_time → metadata row(s) when present
+//
+// Returns null when there is nothing to show, so cards without pricing data
+// keep their original layout.
+// ---------------------------------------------------------------------------
+
+function ServicePricing({ service }: { service: Service }) {
+  const {
+    starting_price,
+    price_range_max,
+    price_suffix,
+    is_price_upon_request,
+    price_fine_print,
+    financing_note,
+    procedure_time,
+    recovery_time,
+  } = service
+
+  const hasPrice = starting_price != null || price_range_max != null
+  const hasMeta = Boolean(procedure_time) || Boolean(recovery_time)
+  const hasAny =
+    is_price_upon_request || hasPrice || Boolean(price_fine_print) || Boolean(financing_note) || hasMeta
+
+  if (!hasAny) return null
+
+  return (
+    <div className="mt-3 border-t border-slate-100 pt-3">
+      {/* ── Price band / "upon request" (R2) ─────────────────────────── */}
+      {is_price_upon_request ? (
+        <p className="text-sm font-medium text-slate-700">Price upon request</p>
+      ) : hasPrice ? (
+        <p className="text-sm font-semibold text-slate-900">
+          {formatPriceBand(starting_price, price_range_max)}
+          {price_suffix ? <span className="ml-1 font-normal text-slate-500">{price_suffix}</span> : null}
+        </p>
+      ) : null}
+
+      {/* ── Fine print ───────────────────────────────────────────────── */}
+      {price_fine_print ? (
+        <p className="mt-1 text-xs text-slate-500">{price_fine_print}</p>
+      ) : null}
+
+      {/* ── Financing note ───────────────────────────────────────────── */}
+      {financing_note ? (
+        <p className="mt-1 text-xs font-medium text-[var(--tenant-primary)]">{financing_note}</p>
+      ) : null}
+
+      {/* ── Procedure / recovery metadata ────────────────────────────── */}
+      {hasMeta ? (
+        <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+          {procedure_time ? (
+            <div className="flex items-baseline gap-1">
+              <dt className="font-medium text-slate-700">Procedure</dt>
+              <dd>{procedure_time}</dd>
+            </div>
+          ) : null}
+          {recovery_time ? (
+            <div className="flex items-baseline gap-1">
+              <dt className="font-medium text-slate-700">Recovery</dt>
+              <dd>{recovery_time}</dd>
+            </div>
+          ) : null}
+        </dl>
+      ) : null}
+    </div>
+  )
+}
+
+/** Formats "starting_price–price_range_max" with locale-aware grouping. */
+function formatPriceBand(starting: number | null | undefined, max: number | null | undefined): string {
+  const fmt = (n: number) => new Intl.NumberFormat().format(n)
+  if (starting != null && max != null) return `${fmt(starting)}–${fmt(max)}`
+  if (starting != null) return `From ${fmt(starting)}`
+  if (max != null) return `Up to ${fmt(max)}`
+  return ''
 }
