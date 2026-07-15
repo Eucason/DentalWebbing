@@ -50,6 +50,14 @@ test('PRE-1: B4 servicePricing explicit true opt-in is honored', () => {
   assert.equal(resolveFlag({ servicePricing: true }, 'servicePricing', { defaultValue: false }), true);
 });
 
+test('PRE-1: B7 teamCredentials flag defaults OFF when key absent (Phase-4)', () => {
+  assert.equal(resolveFlag(legacyFeatures, 'teamCredentials', { defaultValue: false }), false);
+});
+
+test('PRE-1: B7 teamCredentials explicit true opt-in is honored', () => {
+  assert.equal(resolveFlag({ teamCredentials: true }, 'teamCredentials', { defaultValue: false }), true);
+});
+
 test('missing section defaults OFF when defaultValue:false (Phase-4)', () => {
   assert.equal(resolveSection(legacySections, 'beforeAfterGallery', { defaultValue: false }), false);
 });

@@ -2,6 +2,7 @@ import type { AxiosInstance } from 'axios'
 import type {
   BeforeAfter,
   Doctor,
+  DoctorCredential,
   Service,
   Testimonial,
   ClinicInfo,
@@ -70,6 +71,49 @@ function extractFeaturedImageUrl(post: WpPost): string | undefined {
   return post._embedded?.['wp:featuredmedia']?.[0]?.source_url
 }
 
+/**
+ * Maps a raw ACF `credentials` repeater (array of loose objects from WP) into
+ * the typed `DoctorCredential[]`. Rows missing a non-empty `credential_title`
+ * are dropped — a credential without a title has nothing to render. Other
+ * fields fall back to '' so consumers never see `undefined`.
+ */
+function mapCredentials(raw: unknown): DoctorCredential[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .filter((row): row is Record<string, unknown> =>
+      row !== null && typeof row === 'object'
+    )
+    .map((row) => ({
+      credential_title: typeof row.credential_title === 'string' ? row.credential_title : '',
+      credential_type: typeof row.credential_type === 'string' ? row.credential_type : '',
+      institution: typeof row.institution === 'string' ? row.institution : '',
+      year: typeof row.year === 'string' ? row.year : '',
+    }))
+    .filter((c) => c.credential_title.trim().length > 0)
+}
+
+/**
+ * Normalises legacy flat `qualifications[]` strings and the new structured
+ * `credentials[]` repeater into a single chip list. Legacy entries keep their
+ * original string; repeater entries contribute their `credential_title`. The
+ * UI renders only this list and never branches on which shape arrived.
+ */
+function normaliseCredentialChips(
+  legacy: string[] | undefined,
+  credentials: DoctorCredential[] | undefined
+): string[] {
+  const chips: string[] = []
+  for (const q of legacy ?? []) {
+    const trimmed = q.trim()
+    if (trimmed) chips.push(trimmed)
+  }
+  for (const c of credentials ?? []) {
+    const trimmed = c.credential_title.trim()
+    if (trimmed) chips.push(trimmed)
+  }
+  return chips
+}
+
 // ---------------------------------------------------------------------------
 // Tenant Config
 // ---------------------------------------------------------------------------
@@ -107,19 +151,36 @@ export async function fetchDoctors(api: AxiosInstance): Promise<Doctor[]> {
     params: { _embed: true, per_page: 100 },
   })
 
-  return data.map(
-    (post): Doctor => ({
+  return data.map((post): Doctor => {
+    const credentials = mapCredentials(post.acf?.credentials)
+    const legacyQualifications = Array.isArray(post.acf?.qualifications)
+      ? (post.acf.qualifications.filter((q): q is string => typeof q === 'string'))
+      : undefined
+
+    return {
       id: post.id,
       slug: post.slug,
       name: stripHtml(post.title.rendered),
       specialty: typeof post.acf?.specialty === 'string' ? post.acf.specialty : undefined,
       bio: post.excerpt?.rendered ? stripHtml(post.excerpt.rendered) : undefined,
       imageUrl: extractFeaturedImageUrl(post),
-      qualifications: Array.isArray(post.acf?.qualifications)
-        ? (post.acf.qualifications as string[])
+      qualifications: legacyQualifications,
+      credentials,
+      credentialChips: normaliseCredentialChips(legacyQualifications, credentials),
+      years_in_practice:
+        typeof post.acf?.years_in_practice === 'number'
+          ? post.acf.years_in_practice
+          : undefined,
+      languages_spoken: Array.isArray(post.acf?.languages_spoken)
+        ? (post.acf.languages_spoken.filter((l): l is string => typeof l === 'string'))
         : undefined,
-    })
-  )
+      personal_bio_video_url:
+        typeof post.acf?.personal_bio_video_url === 'string'
+          ? post.acf.personal_bio_video_url
+          : undefined,
+      fun_fact: typeof post.acf?.fun_fact === 'string' ? stripHtml(post.acf.fun_fact) : undefined,
+    }
+  })
 }
 
 // ---------------------------------------------------------------------------

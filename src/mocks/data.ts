@@ -40,6 +40,7 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
   ],
   features: {
     contactForm: true,
+    teamCredentials: true,
   },
 }
 
@@ -98,6 +99,19 @@ export const MOCK_CLINIC_INFO: ClinicInfo = {
 // ---------------------------------------------------------------------------
 // Mock Doctors (minimum 3)
 // ---------------------------------------------------------------------------
+// Fixture variety is deliberate — it exercises every branch of the credential
+// UI in offline/dev mode:
+//   1. Dr. Osei  — structured `credentials` repeater (2+) AND legacy
+//                  `qualifications`, so the merged `credentialChips` path and
+//                  the full drawer (video + fun_fact + metadata) all render.
+//   2. Dr. Kariuki — ZERO credentials/qualifications → R2 self-hide: no chip
+//                  block, no trigger, drawer unreachable.
+//   3. Dr. Mwangi — structured repeater only (legacy qualifications absent),
+//                  proving the UI never branches on which shape arrived.
+//
+// `credentialChips` is populated by hand here because mock mode returns
+// MOCK_DOCTORS directly, bypassing the endpoint mapper — it must therefore
+// mirror exactly what `normaliseCredentialChips()` would produce.
 export const MOCK_DOCTORS: Doctor[] = [
   {
     id: 1,
@@ -111,6 +125,23 @@ export const MOCK_DOCTORS: Doctor[] = [
       'MFDS RCS Edinburgh',
       'Invisalign Certified Provider',
     ],
+    credentials: [
+      { credential_title: 'BDS', credential_type: 'Degree', institution: 'University of Nairobi', year: '2010' },
+      { credential_title: 'MFDS RCS', credential_type: 'Fellowship', institution: 'Royal College of Surgeons Edinburgh', year: '2014' },
+      { credential_title: 'Invisalign Certification', credential_type: 'Certification', institution: 'Align Technology', year: '2018' },
+    ],
+    credentialChips: [
+      'BDS – University of Nairobi',
+      'MFDS RCS Edinburgh',
+      'Invisalign Certified Provider',
+      'BDS',
+      'MFDS RCS',
+      'Invisalign Certification',
+    ],
+    years_in_practice: 14,
+    languages_spoken: ['English', 'Swahili'],
+    personal_bio_video_url: 'https://example.com/videos/dr-osei-bio.mp4',
+    fun_fact: 'Outside the clinic Dr. Osei is a keen landscape painter and has exhibited twice in Nairobi.',
   },
   {
     id: 2,
@@ -119,11 +150,10 @@ export const MOCK_DOCTORS: Doctor[] = [
     specialty: 'Orthodontics & Implantology',
     bio: 'Specialising in braces, clear aligners, and dental implants, Dr. Kariuki combines cutting-edge technology with a gentle approach to transform smiles of all ages.',
     imageUrl: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400',
-    qualifications: [
-      'BDS – Kenyatta University',
-      'MSc Orthodontics – UCL',
-      'ITI Fellow – Dental Implants',
-    ],
+    // Intentionally no qualifications / credentials → credentialChips empty.
+    credentialChips: [],
+    years_in_practice: 9,
+    languages_spoken: ['English', 'Swahili', 'German'],
   },
   {
     id: 3,
@@ -132,11 +162,19 @@ export const MOCK_DOCTORS: Doctor[] = [
     specialty: 'Paediatric Dentistry & Oral Health',
     bio: 'Dr. Mwangi specialises in creating a positive dental experience for children from infancy through adolescence, building lifelong habits for excellent oral health.',
     imageUrl: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400',
-    qualifications: [
-      'BDS – University of Nairobi',
-      'MDS Paediatric Dentistry – UKZN',
-      'SAADP Member',
+    credentials: [
+      { credential_title: 'BDS', credential_type: 'Degree', institution: 'University of Nairobi', year: '2012' },
+      { credential_title: 'MDS Paediatric Dentistry', credential_type: 'Degree', institution: 'University of KwaZulu-Natal', year: '2016' },
+      { credential_title: 'SAADP Membership', credential_type: 'Membership', institution: 'SAADP', year: '2017' },
     ],
+    credentialChips: [
+      'BDS',
+      'MDS Paediatric Dentistry',
+      'SAADP Membership',
+    ],
+    years_in_practice: 11,
+    languages_spoken: ['English', 'Swahili'],
+    fun_fact: 'Dr. Mwangi once volunteered on a dental outreach trip across three rural counties in a single week.',
   },
 ]
 

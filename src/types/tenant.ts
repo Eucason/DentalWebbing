@@ -35,6 +35,8 @@ export interface TenantFeatures {
   specialOffers?: boolean
   /** B4 — service pricing fields + before/after slider. */
   servicePricing?: boolean
+  /** B7 — doctor credentials repeater + details drawer. */
+  teamCredentials?: boolean
 }
 
 export interface TenantConfig {
