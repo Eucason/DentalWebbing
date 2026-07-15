@@ -89,4 +89,18 @@ export interface TenantConfig {
    * retain full functionality (backwards-compatible).
    */
   features?: TenantFeatures
+
+  /**
+   * Per-tenant Business Associate Agreement (BAA) registry.
+   *
+   * Maps a stable vendor key → agreement status. PHI-adjacent flows
+   * (scheduling embed, patient-portal hand-off, contact-lease intake)
+   * MUST check `isBaaCleared(vendorKey)` before executing; vendors
+   * without a BAA on file are blocked from loading their scripts/embeds
+   * (R4 HIPAA non-PHI, R6 script isolation).
+   *
+   * Optional — tenants without a registry entry simply have no BAA-gated
+   * vendors configured (backwards-compatible).
+   */
+  baa_registry?: Record<string, { hasBaa: boolean; vendorName: string }>
 }

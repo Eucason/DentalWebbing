@@ -89,6 +89,12 @@
       "status": "complete"
     },
     {
+      "id": "B21",
+      "category": "Phase 4 — HIPAA / Infrastructure",
+      "title": "BAA registry + PHI-flow gate + audit logging: per-tenant BaaRegistry context reading baa_registry from tenant config, useBaaGate hook gating PHI-adjacent reads/writes (R4) and script/embed loading (R6), audit log on every PHI-adjacent access, mock registry with one cleared and one blocked vendor.",
+      "status": "complete"
+    },
+    {
       "id": "T_301",
       "category": "Up Next",
       "title": "Commit and review feat/testimonials-collection; wire a dedicated TestimonialsPage if a full-list route is desired.",
