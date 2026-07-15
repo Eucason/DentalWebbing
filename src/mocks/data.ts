@@ -9,6 +9,7 @@ import type {
   TenantConfig,
   WpPage,
   Faq,
+  SpecialOffer,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -328,6 +329,78 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
     location: 'Pearl River, NY',
     source_platform: 'Google',
     treatment_received: 'Paediatric Hygiene',
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock Special Offers
+// ---------------------------------------------------------------------------
+//
+// The client-side filter keeps only offers that are BOTH is_active=true AND
+// within the [start_date, end_date] window (today = 2026-07-15 in dev).
+//
+//   A — active + in-window + has regular_price  → RENDERS (exercises strikethrough)
+//   B — active + expired (end 2026-06-30)        → filtered out
+//   C — inactive (is_active=false) + in-window   → filtered out
+//   D — active + future (start 2026-09-01)       → filtered out
+export const MOCK_SPECIAL_OFFERS: SpecialOffer[] = [
+  {
+    id: 1,
+    headline: 'Teeth Whitening Special',
+    offer_description:
+      'Professional in-chair whitening that lifts stains by up to 8 shades in a single visit.',
+    price_display: '£99',
+    regular_price: '£199',
+    image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    cta_label: 'Claim Offer',
+    cta_url: '#contact',
+    start_date: '2026-06-01',
+    end_date: '2026-08-31',
+    is_active: true,
+    display_order: 1,
+  },
+  {
+    id: 2,
+    headline: 'Invisalign Consultation',
+    offer_description:
+      'Digital smile scan, treatment timeline estimate, and flexible payment options.',
+    price_display: '£49',
+    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600',
+    cta_label: 'Book Consultation',
+    cta_url: '#contact',
+    start_date: '2026-01-01',
+    end_date: '2026-06-30',
+    is_active: true,
+    display_order: 2,
+  },
+  {
+    id: 3,
+    headline: 'Dental Implant Assessment',
+    offer_description:
+      '3D imaging and a personalised implant plan with our senior implantologist.',
+    price_display: '£75',
+    regular_price: '£150',
+    image: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600',
+    cta_label: 'Reserve Slot',
+    cta_url: '#contact',
+    start_date: '2026-06-01',
+    end_date: '2026-08-31',
+    is_active: false,
+    display_order: 3,
+  },
+  {
+    id: 4,
+    headline: 'Orthodontics Early Bird',
+    offer_description:
+      'Book your braces or clear-aligner treatment before the end of September and save.',
+    price_display: '£1,299',
+    image: 'https://images.unsplash.com/photo-1598256989928-f843536ece3d?w=600',
+    cta_label: 'Learn More',
+    cta_url: '#contact',
+    start_date: '2026-09-01',
+    end_date: '2026-10-31',
+    is_active: true,
+    display_order: 4,
   },
 ]
 

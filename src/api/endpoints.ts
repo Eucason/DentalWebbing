@@ -12,6 +12,7 @@ import type {
   Faq,
   SocialMetrics,
   InsuranceConfig,
+  SpecialOffer,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -212,6 +213,44 @@ export async function fetchTestimonials(api: AxiosInstance): Promise<Testimonial
         typeof post.acf?.treatment_received === 'string'
           ? post.acf.treatment_received
           : undefined,
+    })
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Special Offers
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches the list of special offers from the WP REST API and maps them to the
+ * typed `SpecialOffer` interface.
+ *
+ * `start_date` / `end_date` (ISO 8601) and `is_active` are returned as-is;
+ * filtering to the active window is performed client-side by the hook
+ * (mirrors the testimonials hook pattern).
+ */
+export async function fetchSpecialOffers(api: AxiosInstance): Promise<SpecialOffer[]> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/special-offer', {
+    params: { _embed: true, per_page: 100 },
+  })
+
+  return data.map(
+    (post): SpecialOffer => ({
+      id: post.id,
+      headline: post.title?.rendered ? stripHtml(post.title.rendered) : '',
+      offer_description: post.content?.rendered ? stripHtml(post.content.rendered) : '',
+      price_display:
+        typeof post.acf?.price_display === 'string' ? post.acf.price_display : '',
+      regular_price:
+        typeof post.acf?.regular_price === 'string' ? post.acf.regular_price : undefined,
+      image: extractFeaturedImageUrl(post) ?? '',
+      cta_label: typeof post.acf?.cta_label === 'string' ? post.acf.cta_label : '',
+      cta_url: typeof post.acf?.cta_url === 'string' ? post.acf.cta_url : '',
+      start_date: typeof post.acf?.start_date === 'string' ? post.acf.start_date : '',
+      end_date: typeof post.acf?.end_date === 'string' ? post.acf.end_date : '',
+      is_active: post.acf?.is_active === true,
+      display_order:
+        typeof post.acf?.display_order === 'number' ? post.acf.display_order : 0,
     })
   )
 }
