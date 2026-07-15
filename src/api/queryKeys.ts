@@ -11,6 +11,7 @@
  */
 export const QUERY_KEYS = Object.freeze({
   clinicInfo: (tenantId: string) => ['clinicInfo', tenantId] as const,
+  beforeAfter: (tenantId: string) => ['beforeAfter', tenantId] as const,
   doctors: (tenantId: string) => ['doctors', tenantId] as const,
   services: (tenantId: string) => ['services', tenantId] as const,
   testimonials: (tenantId: string) => ['testimonials', tenantId] as const,

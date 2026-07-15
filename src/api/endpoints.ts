@@ -1,5 +1,6 @@
 import type { AxiosInstance } from 'axios'
 import type {
+  BeforeAfter,
   Doctor,
   Service,
   Testimonial,
@@ -116,6 +117,42 @@ export async function fetchDoctors(api: AxiosInstance): Promise<Doctor[]> {
       qualifications: Array.isArray(post.acf?.qualifications)
         ? (post.acf.qualifications as string[])
         : undefined,
+    })
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Before/After
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches the list of before/after cases from the WP REST API and maps them
+ * to the typed `BeforeAfter` interface.
+ *
+ * Patient names never flow through this endpoint — `case_title` is an
+ * operator-edited anonymised descriptor (R7 pseudonymisation).
+ */
+export async function fetchBeforeAfter(api: AxiosInstance): Promise<BeforeAfter[]> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/before-after', {
+    params: { _embed: true, per_page: 100 },
+  })
+
+  return data.map(
+    (post): BeforeAfter => ({
+      id: post.id,
+      slug: post.slug,
+      case_title: post.title?.rendered ? stripHtml(post.title.rendered) : '',
+      treatment_type:
+        typeof post.acf?.treatment_type === 'string' ? post.acf.treatment_type : '',
+      description: post.content?.rendered ? stripHtml(post.content.rendered) : '',
+      dentist: typeof post.acf?.dentist === 'string' ? post.acf.dentist : '',
+      before_image:
+        typeof post.acf?.before_image === 'string' ? post.acf.before_image : '',
+      after_image:
+        typeof post.acf?.after_image === 'string' ? post.acf.after_image : '',
+      is_featured: post.acf?.is_featured === true,
+      display_order:
+        typeof post.acf?.display_order === 'number' ? post.acf.display_order : 0,
     })
   )
 }

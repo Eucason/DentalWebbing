@@ -1,4 +1,5 @@
 import type {
+  BeforeAfter,
   ClinicInfo,
   Doctor,
   Service,
@@ -135,6 +136,68 @@ export const MOCK_DOCTORS: Doctor[] = [
       'MDS Paediatric Dentistry – UKZN',
       'SAADP Member',
     ],
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock Before/After (minimum 3)
+// ---------------------------------------------------------------------------
+// One case is featured (pins to top); treatment_type and display_order are
+// varied so the gallery's featured-pin + sort + filter logic is exercised.
+// Case titles are operator-edited anonymised descriptors — no real patient
+// names (R7 pseudonymisation).
+export const MOCK_BEFORE_AFTER: BeforeAfter[] = [
+  {
+    id: 1,
+    slug: 'case-veneer-smile-makeover',
+    case_title: 'Full Smile Makeover — Porcelain Veneers',
+    treatment_type: 'Veneers',
+    description:
+      'Diagonal asymmetry and heavy staining across the upper anterior segment transformed with a set of porcelain veneers in two visits.',
+    dentist: 'Dr. Amara Osei',
+    before_image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    after_image: 'https://images.unsplash.com/photo-1598256989928-f843536ece3d?w=600',
+    is_featured: true,
+    display_order: 1,
+  },
+  {
+    id: 2,
+    slug: 'case-invisalign-alignment',
+    case_title: 'Invisalign Clear Aligner Correction',
+    treatment_type: 'Invisalign',
+    description:
+      'Mild crowding and a narrow arch resolved with a series of clear aligners, completing within the estimated timeline.',
+    dentist: 'Dr. Felix Kariuki',
+    before_image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600',
+    after_image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    is_featured: false,
+    display_order: 2,
+  },
+  {
+    id: 3,
+    slug: 'case-whitening-brightening',
+    case_title: 'In-Chair Teeth Whitening',
+    treatment_type: 'Whitening',
+    description:
+      'Years of coffee and tea staining lifted by several shades in a single in-chair session, with sensitivity managed throughout.',
+    dentist: 'Dr. Linda Mwangi',
+    before_image: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=600',
+    after_image: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=600',
+    is_featured: false,
+    display_order: 3,
+  },
+  {
+    id: 4,
+    slug: 'case-implant-single-replacement',
+    case_title: 'Single Tooth Implant Replacement',
+    treatment_type: 'Implants',
+    description:
+      'A missing lower molar replaced with a titanium implant and crown, restoring full chewing function without bridging to adjacent teeth.',
+    dentist: 'Dr. Felix Kariuki',
+    before_image: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600',
+    after_image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600',
+    is_featured: false,
+    display_order: 4,
   },
 ]
 

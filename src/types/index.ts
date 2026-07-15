@@ -1,4 +1,5 @@
 export * from './tenant'
+export * from './beforeAfter'
 export * from './doctor'
 export * from './service'
 export * from './testimonial'
