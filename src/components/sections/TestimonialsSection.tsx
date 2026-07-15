@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
 import { useTestimonials } from '../../hooks/useTestimonials'
 import { TestimonialsSkeleton } from '../ui/Skeleton'
 import type { Testimonial } from '../../types'
+import { buildReviewSchemas, computeAggregateRating, buildAggregateRatingSchema } from '../../utils/jsonLd'
 
 // Vertical stagger offsets cycling per card index — drives the masonry feel
 const STAGGER = ['', 'md:mt-20', 'md:mt-10', 'md:mt-32', 'md:mt-6', 'md:mt-16']
@@ -108,7 +110,57 @@ export function TestimonialsSection({ limit }: TestimonialsSectionProps) {
           </div>
         )}
       </div>
+
+      <ReviewsJsonLd testimonials={items} />
     </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// ReviewsJsonLd — per-review Review schema + AggregateRating schema
+// ---------------------------------------------------------------------------
+
+interface ReviewsJsonLdProps {
+  testimonials: Testimonial[]
+}
+
+function ReviewsJsonLd({ testimonials }: ReviewsJsonLdProps) {
+  const reviews = useMemo(
+    () =>
+      buildReviewSchemas(
+        testimonials.map((t) => ({ quote: t.quote, author: t.author, rating: t.rating }))
+      ),
+    [testimonials]
+  )
+
+  const aggregate = useMemo(() => computeAggregateRating(testimonials), [testimonials])
+  const aggregateSchema = useMemo(
+    () =>
+      aggregate ? buildAggregateRatingSchema({ ratingValue: aggregate.ratingValue, reviewCount: aggregate.reviewCount }) : null,
+    [aggregate]
+  )
+
+  // Gracefully self-hide when there is nothing to emit.
+  if (reviews.length === 0 && !aggregateSchema) return null
+
+  return (
+    <>
+      {reviews.map((schema, i) => (
+        <script
+          key={`review-${i}`}
+          type="application/ld+json"
+          // Payloads are derived from our own typed data, never external input.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
+      {aggregateSchema && (
+        <script
+          type="application/ld+json"
+          // Payload is derived from our own typed data, never external input.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateSchema) }}
+        />
+      )}
+    </>
   )
 }
 

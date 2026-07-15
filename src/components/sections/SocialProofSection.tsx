@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { useClinicInfo } from '../../hooks/useClinicInfo'
+import { useTenant } from '../../context/useTenant'
 import { SocialProofSkeleton } from '../ui/Skeleton'
 import type { SocialMetrics } from '../../types'
-import { buildOrganizationSchema } from '../../utils/jsonLd'
+import { buildLocalBusinessSchema } from '../../utils/jsonLd'
 
 // ---------------------------------------------------------------------------
 // SocialProofSection
@@ -16,10 +17,11 @@ import { buildOrganizationSchema } from '../../utils/jsonLd'
 //   isLoading → <SocialProofSkeleton /> (matches the trust-bar shape)
 //   isError   → neutral inline alert (no crash, no tenant colors)
 //   no metrics → null                 (self-hide; product requirement)
-//   resolved  → trust grid + Organization JSON-LD rich snippet
+//   resolved  → trust grid + LocalBusiness (Dentist) JSON-LD rich snippet
 // ---------------------------------------------------------------------------
 
 export function SocialProofSection() {
+  useTenant()
   const { data, isLoading, isError } = useClinicInfo()
 
   if (isLoading) return <SocialProofSkeleton />
@@ -40,7 +42,14 @@ export function SocialProofSection() {
   const metrics = data.socialMetrics
   if (!metrics || !hasAnyMetric(metrics)) return null
 
-  return <TrustBar metrics={metrics} name={data.heroTitle} />
+  return (
+    <TrustBar
+      metrics={metrics}
+      name={data.heroTitle}
+      address={data.address}
+      telephone={data.contactPhone}
+    />
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -50,9 +59,11 @@ export function SocialProofSection() {
 interface TrustBarProps {
   metrics: SocialMetrics
   name: string
+  address: string
+  telephone: string
 }
 
-function TrustBar({ metrics, name }: TrustBarProps) {
+function TrustBar({ metrics, name, address, telephone }: TrustBarProps) {
   const { googleRating, rating, reviewCount, googleReviewCount, yearsInBusiness, accreditations, awards } =
     metrics
 
@@ -111,7 +122,13 @@ function TrustBar({ metrics, name }: TrustBarProps) {
         )}
       </div>
 
-      <OrganizationJsonLd name={name} rating={displayRating} reviewCount={displayCount} />
+      <LocalBusinessJsonLd
+        name={name}
+        address={address}
+        telephone={telephone}
+        rating={displayRating}
+        reviewCount={displayCount}
+      />
     </section>
   )
 }
@@ -170,25 +187,29 @@ function StarRating({ rating }: StarRatingProps) {
 }
 
 // ---------------------------------------------------------------------------
-// OrganizationJsonLd — Organization schema with aggregateRating
+// LocalBusinessJsonLd — Dentist (LocalBusiness) schema with aggregateRating
 // ---------------------------------------------------------------------------
 
-interface OrganizationJsonLdProps {
+interface LocalBusinessJsonLdProps {
   name: string
+  address: string
+  telephone: string
   rating?: number
   reviewCount?: number
 }
 
-function OrganizationJsonLd({ name, rating, reviewCount }: OrganizationJsonLdProps) {
+function LocalBusinessJsonLd({ name, address, telephone, rating, reviewCount }: LocalBusinessJsonLdProps) {
   const schema = useMemo(
     () =>
-      buildOrganizationSchema({
+      buildLocalBusinessSchema({
         name,
+        address,
+        telephone,
         url: typeof window !== 'undefined' ? window.location.origin : '/',
         rating,
         reviewCount,
       }),
-    [name, rating, reviewCount]
+    [name, address, telephone, rating, reviewCount]
   )
 
   return (
