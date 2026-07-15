@@ -43,6 +43,8 @@ export interface TenantFeatures {
   caseStudies?: boolean
   /** B9 — location CPT + amenity chips + office-tour gallery. */
   locationAmenities?: boolean
+  /** B11 — sandboxed NexHealth-style scheduling embed section. */
+  scheduling?: boolean
 }
 
 export interface TenantConfig {
@@ -59,6 +61,13 @@ export interface TenantConfig {
   contactEmail?: string
   contactPhone?: string
   address?: string
+
+  /**
+   * NexHealth-style scheduling-embed URL. When set, the SchedulingSection
+   * renders a sandboxed iframe pointed at this origin. Optional — tenants
+   * without it simply don't get a scheduling embed (R2 / R8).
+   */
+  schedulingUrl?: string
 
   /**
    * Per-clinic section visibility toggles.
