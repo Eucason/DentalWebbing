@@ -4,7 +4,7 @@ import { AccessibilityProvider } from './context/AccessibilitySuiteContext'
 import { BaaRegistryProvider } from './context/BaaRegistry'
 import { RouteLoadingFallback } from './components/layout/RouteLoadingFallback'
 import { TenantProvider, useTenantConfig } from './context/TenantContext'
-import { CookieBanner } from './components/consent/CookieBanner'
+import { CookieConsentModal } from './components/consent/CookieConsentModal'
 import { initAnalytics } from './utils/analytics'
 import { router } from './router'
 
@@ -28,7 +28,11 @@ function AnalyticsBootstrap() {
     }
   }, [config])
 
-  return <CookieBanner />
+  // The full CMP modal (B14) replaces the minimal B12 banner when the
+  // tenant opts in via the `cookieConsent` Phase-4 feature flag. It renders
+  // alongside the router so it is reachable from every route, and it drives
+  // the same consent.ts binary layer that gates analytics (R5 / R6).
+  return <CookieConsentModal />
 }
 
 function App() {
