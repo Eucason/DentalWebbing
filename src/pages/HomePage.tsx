@@ -7,6 +7,7 @@ import { FinancingSection } from '../components/sections/FinancingSection'
 import { FaqAccordionSection } from '../components/sections/FaqAccordionSection'
 import { HeroSection } from '../components/sections/HeroSection'
 import { InsuranceSection } from '../components/sections/InsuranceSection'
+import { LocationSection } from '../components/sections/LocationSection'
 import { ServicesSection } from '../components/sections/ServicesSection'
 import { SocialProofSection } from '../components/sections/SocialProofSection'
 import { SpecialOffersSection } from '../components/sections/SpecialOffersSection'
@@ -104,6 +105,15 @@ function HomePage() {
         // flag check is needed here). Self-hides when the tenant has no
         // published case studies (R2).
         <CaseStudiesSection />
+      }
+
+      {
+        // Location cards + amenity chips + office-tour gallery. Opt-in via the
+        // locationAmenities feature flag (R3 — defaults OFF; the section
+        // enforces its own gate, so no per-render flag check is needed here).
+        // Self-hides when the tenant has zero locations (R2). Additive only —
+        // never touches clinic-info (see the B9-location-model decision).
+        <LocationSection />
       }
     </>
   )

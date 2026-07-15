@@ -12,6 +12,7 @@ import type {
   Faq,
   SpecialOffer,
   FinancingOption,
+  Location,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -628,6 +629,77 @@ export const MOCK_FINANCING_OPTIONS: FinancingOption[] = [
     accepted: true,
     logo: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=200',
     display_order: 4,
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Mock Locations (minimum 2)
+// ---------------------------------------------------------------------------
+// Fixture variety is deliberate — it exercises every branch of the location
+// card in offline/dev mode:
+//   1. Westside  — FULL amenities: address_line_2, phone, map_iframe_url,
+//                  hours, amenity_tags, office_photos, parking_notes → every
+//                  block inside the card renders.
+//   2. Eastside  — MINIMAL (edge case): only the required address fields and
+//                  phone → hours/amenity_tags/office_photos/parking_notes are
+//                  empty and map_iframe_url is blank, proving every optional
+//                  block self-hides (R2).
+//
+// Every field is populated here (arrays are never `undefined`) because mock
+// mode returns MOCK_LOCATIONS directly, bypassing the endpoint mapper — it
+// must therefore mirror exactly what `fetchLocations()` would produce.
+export const MOCK_LOCATIONS: Location[] = [
+  {
+    id: 1,
+    slug: 'apex-westside',
+    name: 'Apex Orthodontics — Westside',
+    address_line_1: '1420 Westside Boulevard',
+    address_line_2: 'Suite 300',
+    city: 'Austin',
+    state: 'TX',
+    zip: '78701',
+    phone: '(512) 555-0142',
+    map_iframe_url:
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3445.0!2d-97.7431!3d30.2672',
+    hours: [
+      { day: 'Monday', open: '08:00', close: '18:00' },
+      { day: 'Tuesday', open: '08:00', close: '18:00' },
+      { day: 'Wednesday', open: '08:00', close: '18:00' },
+      { day: 'Thursday', open: '08:00', close: '18:00' },
+      { day: 'Friday', open: '08:00', close: '17:00' },
+      { day: 'Saturday', open: '09:00', close: '14:00' },
+      { day: 'Sunday', open: 'Closed', close: 'Closed' },
+    ],
+    amenity_tags: [
+      'Free Parking',
+      'Wheelchair Accessible',
+      'Sedation Available',
+      'Evening Hours',
+    ],
+    office_photos: [
+      'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400',
+      'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400',
+      'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400',
+    ],
+    parking_notes:
+      'Complimentary patient parking is available in the garage beneath the building — enter from Westside Boulevard and take a visitor ticket (validated at reception).',
+  },
+  {
+    id: 2,
+    slug: 'apex-eastside',
+    name: 'Apex Orthodontics — Eastside',
+    address_line_1: '3100 East 12th Street',
+    city: 'Austin',
+    state: 'TX',
+    zip: '78702',
+    phone: '(512) 555-0178',
+    // Intentionally no map_iframe_url, hours, amenities, photos or notes →
+    // exercises the self-hide (R2) path for every optional block.
+    map_iframe_url: '',
+    hours: [],
+    amenity_tags: [],
+    office_photos: [],
+    parking_notes: '',
   },
 ]
 
