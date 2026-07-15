@@ -83,6 +83,12 @@
       "status": "complete"
     },
     {
+      "id": "B11",
+      "category": "Phase 4 — Feature Modules",
+      "title": "NexHealth-style sandboxed scheduling embed: SchedulingSection rendering a sandboxed iframe pointed at the tenant scheduling-embed URL (schedulingUrl from tenant config, zero hardcoding R1/R8). Feature-flagged behind scheduling (R3, defaults OFF). Self-hides when no URL configured (R2). iframe sandboxed allow-scripts allow-same-origin allow-popups allow-forms — top-navigation denied (R6). Skeleton placeholder while loading. No PHI into analytics (R4).",
+      "status": "complete"
+    },
+    {
       "id": "T_301",
       "category": "Up Next",
       "title": "Commit and review feat/testimonials-collection; wire a dedicated TestimonialsPage if a full-list route is desired.",

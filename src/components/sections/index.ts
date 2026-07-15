@@ -1,5 +1,7 @@
 export * from './BeforeAfterSection'
 export * from './CaseStudiesSection'
-export * from './SpecialOffersSection'
 export * from './FinancingSection'
 export * from './LocationSection'
+export * from './SchedulingSection'
+export * from './SpecialOffersSection'
+

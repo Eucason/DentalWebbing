@@ -34,6 +34,7 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
   contactEmail: 'hello@apexorthodontics.net',
   contactPhone: '+254 700 123 456',
   address: '142 Maplewood Avenue, Suite 3, Nairobi, Kenya 00200',
+  schedulingUrl: 'https://embed.nexhealth.example.com/schedule/apex-orthodontics',
   navigation: [
     { to: '/', label: 'Home', end: true },
     { to: '/services', label: 'Services' },
@@ -44,6 +45,7 @@ export const MOCK_TENANT_CONFIG: TenantConfig = {
   features: {
     contactForm: true,
     teamCredentials: true,
+    scheduling: true,
   },
 }
 
