@@ -16,6 +16,7 @@ import type {
   InsuranceConfig,
   SpecialOffer,
   FinancingOption,
+  Location,
 } from '../types'
 
 // ---------------------------------------------------------------------------
@@ -181,6 +182,69 @@ export async function fetchDoctors(api: AxiosInstance): Promise<Doctor[]> {
           ? post.acf.personal_bio_video_url
           : undefined,
       fun_fact: typeof post.acf?.fun_fact === 'string' ? stripHtml(post.acf.fun_fact) : undefined,
+    }
+  })
+}
+
+// ---------------------------------------------------------------------------
+// Locations
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches the list of locations from the WP REST API and maps them to the typed
+ * `Location` interface.
+ *
+ * The `location` CPT is additive (see the `B9-location-model` decision): it
+ * coexists with `clinic-info` and serves multi-location tenants only. Fields
+ * are read from the location's ACF payload; arrays are normalised so callers
+ * always receive arrays (never `undefined`).
+ */
+export async function fetchLocations(api: AxiosInstance): Promise<Location[]> {
+  const { data } = await api.get<WpPost[]>('/wp-json/wp/v2/location', {
+    params: { _embed: true, per_page: 100 },
+  })
+
+  return data.map((post): Location => {
+    const raw = post.acf
+
+    const hours = Array.isArray(raw?.hours)
+      ? raw.hours
+          .filter((h): h is Record<string, unknown> => typeof h === 'object' && h !== null)
+          .map((h) => ({
+            day: typeof h.day === 'string' ? h.day : '',
+            open: typeof h.open === 'string' ? h.open : '',
+            close: typeof h.close === 'string' ? h.close : '',
+          }))
+          .filter((h) => h.day.length > 0)
+      : []
+
+    const amenity_tags = Array.isArray(raw?.amenity_tags)
+      ? raw.amenity_tags.filter((t): t is string => typeof t === 'string')
+      : []
+
+    const office_photos = Array.isArray(raw?.office_photos)
+      ? raw.office_photos.filter((p): p is string => typeof p === 'string')
+      : []
+
+    return {
+      id: post.id,
+      slug: post.slug,
+      name: stripHtml(post.title.rendered),
+      address_line_1:
+        typeof raw?.address_line_1 === 'string' ? raw.address_line_1 : '',
+      address_line_2:
+        typeof raw?.address_line_2 === 'string' ? raw.address_line_2 : undefined,
+      city: typeof raw?.city === 'string' ? raw.city : '',
+      state: typeof raw?.state === 'string' ? raw.state : '',
+      zip: typeof raw?.zip === 'string' ? raw.zip : '',
+      phone: typeof raw?.phone === 'string' ? raw.phone : '',
+      map_iframe_url:
+        typeof raw?.map_iframe_url === 'string' ? raw.map_iframe_url : '',
+      hours,
+      amenity_tags,
+      office_photos,
+      parking_notes:
+        typeof raw?.parking_notes === 'string' ? raw.parking_notes : '',
     }
   })
 }

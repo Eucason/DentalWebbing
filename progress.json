@@ -74,7 +74,7 @@
       "id": "B9",
       "category": "Phase 4 — Feature Modules",
       "title": "location CPT + amenity chips + office-tour gallery: native CPT with multi-location support, amenity tags, office photos, field behind locationAmenities flag (R3).",
-      "status": "pending"
+      "status": "complete"
     },
     {
       "id": "B10",
@@ -177,6 +177,11 @@
       "decision": "R3 resolved via option (a): useFeatureFlag/useSectionVisible accept per-call { defaultValue: false }. Legacy flags keep true-default (backwards-compat). Every new Phase-4 flag MUST pass defaultValue:false so it stays off until a tenant opts in.",
       "rationale": "Closes PRE-1 in phase4-tasks.json; external Ruflo memory_store no longer available so the record lives in-repo.",
       "ts": "2026-07-14T11:13:34.363Z"
+    },
+    {
+      "id": "B9-location-model",
+      "decision": "location CPT coexists with clinic-info. clinic-info remains the single source of truth for single-location tenants. location CPT is additive for multi-location tenants only. MapSection/ContactSection read from clinic-info for single-location, and render one card per location for multi-location tenants. Single-location tenants are unaffected.",
+      "ts": "2026-07-15T08:12:01.768Z"
     }
   ]
 }

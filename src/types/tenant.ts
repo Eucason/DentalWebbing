@@ -41,6 +41,8 @@ export interface TenantFeatures {
   financing?: boolean
   /** B10 — case_study CPT + smile-stories band. */
   caseStudies?: boolean
+  /** B9 — location CPT + amenity chips + office-tour gallery. */
+  locationAmenities?: boolean
 }
 
 export interface TenantConfig {
