@@ -39,6 +39,8 @@ export interface TenantFeatures {
   teamCredentials?: boolean
   /** B8 — financing_option CPT + financing band section. */
   financing?: boolean
+  /** B10 — case_study CPT + smile-stories band. */
+  caseStudies?: boolean
 }
 
 export interface TenantConfig {
