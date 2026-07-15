@@ -115,6 +115,35 @@ export function TestimonialsSection({ limit }: TestimonialsSectionProps) {
 function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; index: number }) {
   const paddedIndex = String(index + 1).padStart(2, '0')
 
+  // Video testimonials render an inline HTML5 player instead of the text
+  // quote. The poster (if any) is shown until the user presses play.
+  if (testimonial.video_url) {
+    return (
+      <article className="rounded-2xl border border-white/[0.14] bg-transparent p-6 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] backdrop-blur-xl sm:p-7">
+        <span className="mb-4 block text-xs text-white/30" aria-hidden="true">
+          ({paddedIndex})
+        </span>
+        <video
+          controls
+          poster={testimonial.video_thumbnail}
+          src={testimonial.video_url}
+          preload="metadata"
+          className="aspect-video w-full rounded-lg bg-black object-cover"
+          aria-label={`Video testimonial from ${testimonial.author}`}
+        >
+          Your browser does not support the video tag.
+        </video>
+        <footer className="mt-4 space-y-1">
+          <span className="block text-right text-xs text-white/50">
+            — {testimonial.author}
+            {testimonial.location ? `, ${testimonial.location}` : ''}
+          </span>
+          <SourceMetadata testimonial={testimonial} />
+        </footer>
+      </article>
+    )
+  }
+
   return (
     <article className="rounded-2xl border border-white/[0.14] bg-transparent p-6 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.18)] backdrop-blur-xl sm:p-7">
       <span className="mb-4 block text-xs text-white/30" aria-hidden="true">
@@ -123,11 +152,31 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
       <blockquote className="text-base font-normal leading-7 text-white/80 md:text-[0.9rem] md:font-light md:leading-relaxed">
         {testimonial.quote}
       </blockquote>
-      <span className="mt-6 block text-right text-xs text-white/50">
-        — {testimonial.author}
-        {testimonial.location ? `, ${testimonial.location}` : ''}
-      </span>
+      <footer className="mt-6 space-y-1">
+        <span className="block text-right text-xs text-white/50">
+          — {testimonial.author}
+          {testimonial.location ? `, ${testimonial.location}` : ''}
+        </span>
+        <SourceMetadata testimonial={testimonial} />
+      </footer>
     </article>
+  )
+}
+
+/**
+ * Small metadata line showing where a review originated and which treatment
+ * it refers to. Both fields are optional, so the line only renders when at
+ * least one is present.
+ */
+function SourceMetadata({ testimonial }: { testimonial: Testimonial }) {
+  if (!testimonial.source_platform && !testimonial.treatment_received) return null
+
+  return (
+    <p className="text-right text-[0.7rem] text-white/40">
+      {testimonial.source_platform ? `Source: ${testimonial.source_platform}` : ''}
+      {testimonial.source_platform && testimonial.treatment_received ? ' · ' : ''}
+      {testimonial.treatment_received ? `Treatment: ${testimonial.treatment_received}` : ''}
+    </p>
   )
 }
 
