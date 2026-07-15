@@ -45,6 +45,8 @@ export interface TenantFeatures {
   locationAmenities?: boolean
   /** B11 — sandboxed NexHealth-style scheduling embed section. */
   scheduling?: boolean
+  /** B13 — multi-channel mobile sticky CTA bar. */
+  stickyCta?: boolean
 }
 
 export interface TenantConfig {
@@ -117,4 +119,19 @@ export interface TenantConfig {
    * at all (backwards-compatible).
    */
   analytics?: import('./analytics').AnalyticsConfig
+
+  /**
+   * Per-tenant multi-channel mobile sticky CTA bar configuration.
+   *
+   * Drives which contact channels (phone / sms / email / callback) appear as
+   * fixed-bottom tabs, each expanding an inline form — never hardcoded in
+   * component code (R1). The set of tabs is derived from `channels` in
+   * full. When omitted or empty, the bar self-hides (R2).
+   *
+   * Optional — tenants without a sticky-CTA config simply get no bar
+   * (backwards-compatible).
+   */
+  stickyCta?: {
+    channels: Array<'phone' | 'sms' | 'email' | 'callback'>
+  }
 }

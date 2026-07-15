@@ -10,6 +10,7 @@ import { InsuranceSection } from '../components/sections/InsuranceSection'
 import { LocationSection } from '../components/sections/LocationSection'
 import { SchedulingSection } from '../components/sections/SchedulingSection'
 import { ServicesSection } from '../components/sections/ServicesSection'
+import { StickyCtaBar } from '../components/sections/StickyCtaBar'
 import { SocialProofSection } from '../components/sections/SocialProofSection'
 import { SpecialOffersSection } from '../components/sections/SpecialOffersSection'
 import { TestimonialsSection } from '../components/sections/TestimonialsSection'
@@ -126,6 +127,17 @@ function HomePage() {
         // is sandboxed so the third-party widget cannot navigate the host
         // page (R6). No PHI crosses into analytics on this route (R4).
         <SchedulingSection />
+      }
+
+      {
+        // Multi-channel mobile sticky CTA bar. Opt-in via the stickyCta
+        // feature flag (R3 — defaults OFF; the section enforces its own gate,
+        // so no per-render flag check is needed here). The set of tabs is
+        // driven by tenant config (R1 — never hardcoded); the section
+        // self-hides when no channels are configured (R2). Each tab expands
+        // an inline form in place — no navigation away (R2), with
+        // expand/collapse that respects prefers-reduced-motion.
+        <StickyCtaBar />
       }
     </>
   )
