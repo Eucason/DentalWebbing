@@ -329,6 +329,33 @@ export async function submitContactForm(
 }
 
 // ---------------------------------------------------------------------------
+// Contact Lease (location-aware appointment request)
+// ---------------------------------------------------------------------------
+
+/**
+ * Submits a location-aware appointment request to the WordPress REST API.
+ *
+ * The `contact-lease` endpoint is the non-PHI intake handoff for appointment
+ * requests. It carries the standard contact fields plus the optional
+ * `location_id`, `preferred_time`, and `reason_for_visit` intake fields. No
+ * PHI (medical history, medications, SSN, subscriber ID, or chart data) is
+ * ever accepted here — any medical-history step must be handed off to a
+ * BAA-covered vendor (NexHealth/Phreesia), never collected natively.
+ *
+ * Returns `{ success: true }` on HTTP 200; throws on any other status.
+ */
+export async function submitContactLease(
+  api: AxiosInstance,
+  payload: ContactFormData
+): Promise<ContactFormResponse> {
+  const { data } = await api.post<ContactFormResponse>(
+    '/wp-json/dentalwebbing/v1/contact-lease',
+    payload
+  )
+  return data
+}
+
+// ---------------------------------------------------------------------------
 // Dynamic Pages
 // ---------------------------------------------------------------------------
 

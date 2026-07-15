@@ -347,3 +347,33 @@ export async function mockSubmitContactForm(
     setTimeout(() => resolve({ success: true }), 1200)
   })
 }
+
+// ---------------------------------------------------------------------------
+// Mock Contact Lease (location-aware appointment request)
+// ---------------------------------------------------------------------------
+
+/**
+ * Mock stand-in for the `contact-lease` endpoint. Logs the non-PHI intake
+ * payload to the console (so the location-aware request flow is observable
+ * during offline dev) and resolves immediately.
+ *
+ * Real filtering of any PHI never happens client-side — this mock only ever
+ * sees the non-PHI fields `location_id`, `preferred_time`, and
+ * `reason_for_visit`. Collecting medical history, medications, SSN,
+ * subscriber ID, or chart data is a hand-off to a BAA-covered vendor, never
+ * a native field.
+ */
+export async function mockSubmitContactLease(
+  payload: ContactFormData
+): Promise<ContactFormResponse> {
+  // eslint-disable-next-line no-console
+  console.log('[mock] contact-lease appointment request', {
+    name: payload.name,
+    email: payload.email,
+    phone: payload.phone,
+    location_id: payload.location_id,
+    preferred_time: payload.preferred_time,
+    reason_for_visit: payload.reason_for_visit,
+  })
+  return { success: true }
+}
